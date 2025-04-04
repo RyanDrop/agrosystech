@@ -1,0 +1,8 @@
+version: '2.1'
+
+services:
+  server:
+    image: agro-frontend
+    build: .
+    ports:
+      - 8081:80
