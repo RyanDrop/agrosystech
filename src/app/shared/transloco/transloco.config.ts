@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, isDevMode } from '@angular/core';
 import { Translation, TranslocoLoader, TranslocoOptions, TranslocoService } from '@jsverse/transloco';
-import { LocalStorageService } from '@shared';
+
 import { ELanguage } from '../enums/language.enum';
 import { EStorageKey } from '../enums/storage-key.enum';
+import { LocalStorageService } from './../services/local-storage/local-storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class TranslocoHttpLoader implements TranslocoLoader {

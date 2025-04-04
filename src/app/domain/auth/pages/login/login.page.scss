@@ -1,0 +1,35 @@
+:host {
+  main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    overflow: hidden;
+    height: 100vh;
+    background-image: url('./../../../../../assets/images/backgroud.png');
+    background-size: cover;
+    padding: 0 20px;
+
+    @media (max-width: 768px) {
+      display: flex;
+      justify-content: center;
+    }
+
+    section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &.login {
+        flex-direction: column;
+        max-width: 450px;
+        padding: 25px;
+        box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
+        background-color: var(--white-01);
+        img {
+          max-width: 350px;
+          width: 100%;
+        }
+      }
+    }
+  }
+}

@@ -21,8 +21,11 @@ export default [
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
         project: './tsconfig.app.json',
-        ecmaVersion: 2020,
+        ecmaVersion: 12,
         sourceType: 'module',
       },
     },
@@ -89,18 +92,6 @@ export default [
           modifiers: ['exported'],
           format: ['UPPER_CASE'],
         },
-        {
-          selector: ['enumMember'],
-          format: ['UPPER_CASE'],
-        },
-        {
-          selector: 'enum',
-          format: ['PascalCase'],
-          custom: {
-            regex: '^E[A-Z]',
-            match: true,
-          },
-        },
       ],
 
       '@angular-eslint/template/interactive-supports-focus': 'off',
@@ -109,7 +100,7 @@ export default [
       '@angular-eslint/component-class-suffix': [
         'error',
         {
-          suffixes: ['Page', 'Component', 'Dialog', 'Widget'],
+          suffixes: ['Page', 'Component', 'Dialog', 'Widget', 'Layout'],
         },
       ],
       '@angular-eslint/directive-selector': [

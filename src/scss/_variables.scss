@@ -1,0 +1,26 @@
+$fonts: (
+  general: "'Poppins', sans-serif",
+);
+
+$colors: (
+  primary: #82c25e,
+  secondary: #e0342a,
+  black-01: #000000,
+  black-02: #1e1b19,
+  white-01: #ffffff,
+  white-02: #eeeeee,
+  gray-01: #d2d2d2,
+  gray-02: #b7b7b7,
+  green: #178a0c,
+  red: #da0b00,
+);
+
+:root {
+  @each $name, $color in $colors {
+    --#{$name}: #{$color};
+  }
+
+  @each $name, $font in $fonts {
+    --#{$name}-font: #{$font};
+  }
+}

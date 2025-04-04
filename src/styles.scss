@@ -1,4 +1,5 @@
 @use 'mixins' as *;
+@use 'variables' as *;
 
 * {
   bottom: 0;
@@ -13,6 +14,44 @@ html[lang] body {
 
 html,
 body {
-  @include full-size();
-  font-family: 'Roboto', serif;
+  font-family: 'Poppins', serif;
+  font-family: var(--general-font);
+}
+
+a {
+  color: var(--primary);
+  &:hover {
+    color: var(--secondary);
+  }
+}
+
+.ant-input:focus,
+.ant-input-focused,
+.ant-input:hover,
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused,
+.ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px #83c25e2a;
+}
+
+button:not(:disabled) {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: white;
+
+  &:hover {
+    border-color: var(--primary);
+    background-color: var(--green);
+    color: var(--white-01);
+  }
+
+  &.ant-btn-link {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+    &:hover {
+      border-color: var(--secondary);
+      background-color: var(--red);
+    }
+  }
 }

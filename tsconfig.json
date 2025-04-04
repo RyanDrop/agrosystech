@@ -22,10 +22,10 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@core": ["src/app/core/index.ts"],
-      "@domain": ["src/app/domain/index.ts"],
-      "@shared": ["src/app/shared/index.ts"],
-      "@widgets": ["src/app/widgets/index.ts"]
+      "@core": ["src/app/core/*"],
+      "@domain": ["src/app/domain/*"],
+      "@shared": ["src/app/shared/*"],
+      "@widgets": ["src/app/widgets/*"]
     }
   },
   "files": [],
