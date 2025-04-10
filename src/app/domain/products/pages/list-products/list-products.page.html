@@ -1,3 +1,71 @@
-<header>Header</header>
-<main>Main</main>
-<footer>Footer</footer>
+<header class="crud">
+  <h1>Listagem de Produtos</h1>
+  <span>Gerencie seus produtos, ações de criação, edição e exclusão.</span>
+</header>
+<nz-divider></nz-divider>
+<main class="crud">
+  <div class="flex">
+    <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+      <input type="text" nz-input placeholder="Pesquisar produto por nome" />
+    </nz-input-group>
+    <ng-template #suffixIconButton>
+      <button nz-button nzType="primary" nzSearch><nz-icon nzType="search" /></button>
+    </ng-template>
+    <button
+      nz-button
+      nzType="primary"
+      class="ml-4"
+      (click)="navigateTo('/products/form')"
+      (keydown.enter)="navigateTo('/products/form')"
+    >
+      Novo
+    </button>
+  </div>
+  <nz-divider></nz-divider>
+  <nz-table #basicTable [nzData]="listOfData">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (data of basicTable.data; track data) {
+        <tr class="table-row">
+          <td>{{ data.name }}</td>
+          <td>
+            <nz-icon
+              nzType="eye"
+              nzTheme="outline"
+              nzTooltipTitle="Consultar"
+              nzTooltipPlacement="bottom"
+              nz-tooltip
+              nzTooltipColor="#178a0c"
+              (click)="navigateTo('/products/form/' + data.id + '/consult')"
+            />
+            <nz-icon
+              nzType="edit"
+              nzTheme="outline"
+              nzTooltipTitle="Editar"
+              nzTooltipPlacement="bottom"
+              nz-tooltip
+              nzTooltipColor="#178a0c"
+              (click)="navigateTo('/products/form/' + data.id + '/edit')"
+            />
+            <nz-icon
+              nzType="delete"
+              nzTheme="outline"
+              nzTooltipTitle="Excluir"
+              nzTooltipPlacement="bottom"
+              nz-tooltip
+              nzTooltipColor="#178a0c"
+              (click)="deleteCustomer(data.id)"
+            />
+          </td>
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+</main>
+<nz-divider></nz-divider>
+<footer class="crud"></footer>

@@ -1,0 +1,18 @@
+:host {
+  header.crud {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    h1 {
+      margin-bottom: 0;
+      line-height: 1.2;
+    }
+  }
+
+  .form-body {
+    background-color: var(--white-01);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}
