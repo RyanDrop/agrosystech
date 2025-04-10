@@ -1,0 +1,37 @@
+:host {
+  header.crud {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    h1 {
+      margin-bottom: 0;
+      line-height: 1.2;
+    }
+  }
+
+  nz-table {
+    .anticon {
+      margin: 0 10px;
+      font-size: 18px;
+      transition: color 0.3s;
+      cursor: pointer;
+      &:hover {
+        color: var(--black-01);
+      }
+    }
+  }
+
+  .table-row {
+    transition:
+      background-color 0.3s,
+      color 0.3s;
+
+    &:hover {
+      background-color: var(--primary);
+      color: var(--white-01);
+      & > * {
+        background-color: var(--primary);
+      }
+    }
+  }
+}

@@ -1,0 +1,32 @@
+:host {
+  nz-layout {
+    background: #c2d9c1;
+  }
+  nz-sider {
+    background: var(--primary);
+    width: 50px !important;
+    min-width: 50px !important;
+    flex: 0 0 50px !important;
+    height: 100vh;
+
+    &.opened {
+      width: 200px !important;
+      min-width: 200px !important;
+      flex: 0 0 200px !important;
+      @media (max-width: 768px) {
+        width: 100% !important;
+        min-width: 100% !important;
+        flex: 0 0 100% !important;
+      }
+    }
+  }
+
+  nz-content {
+    min-height: 100vh;
+    padding: 20px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    background: #c2d9c1;
+  }
+}

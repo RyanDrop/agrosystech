@@ -1,0 +1,34 @@
+<button (click)="isOpened.set(!isOpened())" (keydown.enter)="isOpened.set(!isOpened())">
+  <img
+    [src]="isOpened() ? 'assets/images/logo-text.png' : 'assets/images/logo.jpg'"
+    alt="Agrosystech Logo"
+    [class.opened]="this.computedIsOpen()"
+  />
+</button>
+<nz-list nzItemLayout="horizontal" [nzLoading]="isLoading()" nzSize="small">
+  @for (item of listData; track item) {
+    <nz-list-item>
+      <nz-list-item-meta-title>
+        @if (isOpened()) {
+          <a
+            tabindex="0"
+            (click)="isMobile() && isOpened.set(false); navigateTo(item)"
+            (keydown.enter)="isMobile() && isOpened.set(false); navigateTo(item)"
+          >
+            <i nz-icon [nzType]="item.icon" nzTheme="outline"></i>{{ item.title }}</a
+          >
+        } @else {
+          <a
+            tabindex="0"
+            (click)="isMobile() && isOpened.set(false); navigateTo(item)"
+            (keydown.enter)="isMobile() && isOpened.set(false); navigateTo(item)"
+            ><i nz-icon [nzType]="item.icon" nzTheme="outline"></i
+          ></a>
+        }
+      </nz-list-item-meta-title>
+    </nz-list-item>
+  }
+  @if (listData.length === 0) {
+    <nz-list-empty />
+  }
+</nz-list>
