@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NzCardComponent } from 'ng-zorro-antd/card';
 
 @Component({
   selector: 'agro-auth',
-  imports: [NzCardComponent, RouterModule],
+  imports: [RouterModule],
   template: '  <router-outlet />',
   styleUrl: './auth.layout.scss',
 })

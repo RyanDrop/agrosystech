@@ -1,0 +1,42 @@
+:host {
+  main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: 100vh;
+    background-image: url('./../../../../../assets/images/backgroud.png');
+    background-size: cover;
+    padding: 20px;
+
+    .container-steps {
+      max-width: 520px;
+      width: 100%;
+
+      padding: 25px;
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
+      background-color: var(--white-01);
+      overflow-y: auto;
+    }
+  }
+
+  ::ng-deep {
+    h2,
+    .description {
+      text-align: center;
+      display: block;
+      justify-content: center;
+    }
+
+    nz-steps {
+      width: 80%;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    form {
+      margin-top: 1rem;
+    }
+  }
+}

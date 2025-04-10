@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export enum eUserStatus {
-  ACTIVE = 'ative',
+  ACTIVE = 'active',
   INACTIVE = 'inactive',
   BLOCKED = 'blocked',
   PENDING = 'pending',

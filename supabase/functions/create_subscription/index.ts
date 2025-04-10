@@ -33,7 +33,13 @@ async function getCustomerFromCompanyId(company_id: string) {
   return data;
 }
 
-async function createOrRetrieveCustomer(stripeClient: any, company_id: string, email: string, name: string, phone: string): Promise<iCustomer> {
+async function createOrRetrieveCustomer(
+  stripeClient: any,
+  company_id: string,
+  email: string,
+  name: string,
+  phone: string,
+): Promise<iCustomer> {
   const customer = await getCustomerFromCompanyId(company_id);
   if (customer) return customer;
   if (!company_id) throw new Error('O ID da empresa é obrigatório');
@@ -55,7 +61,7 @@ async function createOrRetrieveCustomer(stripeClient: any, company_id: string, e
   return data as iCustomer;
 }
 
-serve(async req => {
+serve(async (req) => {
   const headers = {
     ...corsHeaders(req.headers.get('Origin') || 'null'),
     'Content-Type': 'application/json',
@@ -83,13 +89,15 @@ serve(async req => {
     const customerSubscriptions = await stripeClient.subscriptions.list({
       customer: customer.stripe_customer_id,
     });
-    const activeSubscriptions = customerSubscriptions.data.filter((subscription: { status: string }) => subscription.status === 'active');
+    const activeSubscriptions = customerSubscriptions.data.filter(
+      (subscription: { status: string }) => subscription.status === 'active',
+    );
     if (activeSubscriptions.length > 0) throw new Error('Cliente já possui uma ou mais assinaturas ativas');
 
     const subscription = await stripeClient.subscriptions.create({
       customer: customer.stripe_customer_id,
       items: [{ price: price_id }],
-      trial_period_days: 14,
+      trial_period_days: 7,
     });
 
     return new Response(JSON.stringify(subscription), { headers });

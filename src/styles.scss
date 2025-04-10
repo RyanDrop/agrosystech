@@ -25,6 +25,43 @@ a {
   }
 }
 
+.ant-steps-item-finish .ant-steps-item-icon,
+.ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon {
+  background-color: var(--white-01);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title::after,
+.ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-icon,
+.ant-steps-item-process .ant-steps-item-icon {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.ant-radio-checked .ant-radio-inner {
+  background-color: var(--white-01);
+  border-color: var(--primary);
+}
+
+.ant-radio-checked .ant-radio-inner::after {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.ant-tag-processing {
+  background-color: #83c25e34;
+  border-color: var(--primary);
+  color: var(--primary);
+  font-size: 14px;
+}
+
+.ant-spin,
+.ant-spin-dot-item {
+  color: var(--primary);
+  background-color: var(--primary);
+}
+
 .ant-input:focus,
 .ant-input-focused,
 .ant-input:hover,
