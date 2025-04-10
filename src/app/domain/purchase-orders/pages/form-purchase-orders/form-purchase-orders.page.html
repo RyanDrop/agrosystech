@@ -1,0 +1,21 @@
+<header class="crud">
+  <h1>Formulário de Pedidos</h1>
+  <span>Crie ou edite um pedido.</span>
+</header>
+<nz-divider></nz-divider>
+<main class="crud">
+  <div class="form-body">
+    <agro-dynamic-form [config]="orderConfig" />
+  </div>
+</main>
+<nz-divider></nz-divider>
+<footer class="crud">
+  <button nz-button nzType="primary" nzDanger class="mr-4" (click)="cancel('purchase-orders')">Voltar</button>
+  @if (isConsult()) {
+    <button nz-button nzType="primary" (click)="navigateTo('/purchase-orders/form/' + order().id + '/edit')">Editar</button>
+  } @else {
+    <button nz-button nzType="primary" (click)="submit('purchase-orders')" [disabled]="dynamicForm?.form?.invalid">
+      Confirmar
+    </button>
+  }
+</footer>

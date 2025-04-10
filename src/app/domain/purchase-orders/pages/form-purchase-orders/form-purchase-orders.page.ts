@@ -8,12 +8,12 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 
 import { BaseListComponent } from '../../../../shared/components/base-list.component';
 import { eDynamicField } from '../../../../widgets/components/dynamic-form/dynamic-field.enum';
-import { DynamicFormConfig } from './../../../../widgets/components/dynamic-form/dynamic-form-config.interface';
-import { DynamicFormComponent } from './../../../../widgets/components/dynamic-form/dynamic-form.component';
-import { Customer } from './../list-clients/list-clients.page';
+import { DynamicFormConfig } from '../../../../widgets/components/dynamic-form/dynamic-form-config.interface';
+import { DynamicFormComponent } from '../../../../widgets/components/dynamic-form/dynamic-form.component';
+import { iOrder } from './../../interfaces/purchase-orders.interface';
 
 @Component({
-  selector: 'agro-form-clients',
+  selector: 'agro-form-orders',
   imports: [
     DynamicFormComponent,
     NzButtonComponent,
@@ -23,13 +23,13 @@ import { Customer } from './../list-clients/list-clients.page';
     ReactiveFormsModule,
     NzDividerModule,
   ],
-  templateUrl: './form-clients.page.html',
-  styleUrl: './form-clients.page.scss',
+  templateUrl: './form-purchase-orders.page.html',
+  styleUrl: './form-purchase-orders.page.scss',
 })
-export class FormClientsPage extends BaseListComponent implements AfterViewInit {
+export class FormPurchaseOrdersPage extends BaseListComponent implements AfterViewInit {
   protected isConsult = signal(false);
   protected isNew = signal(false);
-  protected customer: WritableSignal<Customer>;
+  protected order: WritableSignal<iOrder>;
 
   public ngAfterViewInit(): void {
     const isConsult = this.router.url.split('/')[4] === 'consult';
@@ -37,14 +37,14 @@ export class FormClientsPage extends BaseListComponent implements AfterViewInit 
     this.isConsult.set(isConsult);
     this.isNew.set(isNew);
 
-    const findOnLocalStorage = JSON.parse(localStorage.getItem('customers') || '[]');
+    const findOnLocalStorage = JSON.parse(localStorage.getItem('purchase-orders') || '[]');
     if (findOnLocalStorage.length > 0) {
       const id = this.router.url.split('/')[3];
       if (id) {
-        const customer = findOnLocalStorage.find((customer: any) => customer.id == id);
-        if (customer) {
-          this.dynamicForm.form.patchValue(customer);
-          this.customer = signal(customer);
+        const order = findOnLocalStorage.find((order: any) => order.id == id);
+        if (order) {
+          this.dynamicForm.form.patchValue(order);
+          this.order = signal(order);
           if (isConsult) {
             this.dynamicForm.form.disable();
           }
@@ -55,7 +55,7 @@ export class FormClientsPage extends BaseListComponent implements AfterViewInit 
 
   @ViewChild(DynamicFormComponent) public dynamicForm!: DynamicFormComponent;
 
-  public customerConfig: DynamicFormConfig[] = [
+  public orderConfig: DynamicFormConfig[] = [
     {
       label: 'Nome',
       name: 'name',
@@ -64,28 +64,7 @@ export class FormClientsPage extends BaseListComponent implements AfterViewInit 
         typeField: 'text',
       },
       validations: [Validators.required, Validators.minLength(3), Validators.maxLength(100)],
-      size: 8,
-    },
-    {
-      label: 'E-mail',
-      name: 'email',
-      type: {
-        field: eDynamicField.INPUT,
-        typeField: 'email',
-      },
-      validations: [Validators.email, Validators.maxLength(255)],
-      size: 8,
-    },
-    {
-      label: 'Telefone',
-      name: 'phone',
-      type: {
-        field: eDynamicField.INPUT,
-        typeField: 'tel',
-      },
-      mask: '(00) 00000-0000||(00) 0000-0000',
-      validations: [],
-      size: 8,
+      size: 24,
     },
   ];
 
@@ -102,17 +81,16 @@ export class FormClientsPage extends BaseListComponent implements AfterViewInit 
       currentForm.push(customer);
       localStorage.setItem(form, JSON.stringify(currentForm));
     } else {
-      const findIndex = currentForm.findIndex((customer: any) => customer.id == this.customer().id);
-      const customer = {
-        id: this.customer().id,
+      const findIndex = currentForm.findIndex((customer: any) => customer.id == this.order().id);
+      const order = {
+        id: this.order().id,
         ...this.dynamicForm.form.getRawValue(),
-        lastOrder: new Date(),
       };
-      currentForm[findIndex] = customer;
+      currentForm[findIndex] = order;
       localStorage.setItem(form, JSON.stringify(currentForm));
     }
 
     this.dynamicForm.form.reset();
-    this.router.navigate(['/', 'customers', 'list']);
+    this.router.navigate(['/', 'purchase-orders', 'list']);
   }
 }

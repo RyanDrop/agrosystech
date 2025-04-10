@@ -20,13 +20,13 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "paths": {
-      "@core": ["src/app/core/*"],
-      "@domain": ["src/app/domain/*"],
-      "@shared": ["src/app/shared/*"],
-      "@widgets": ["src/app/widgets/*"]
-    }
+    "noFallthroughCasesInSwitch": true
+    // "paths": {
+    //   "@core": ["src/app/core/*"],
+    //   "@domain": ["src/app/domain/*"],
+    //   "@shared": ["src/app/shared/*"],
+    //   "@widgets": ["src/app/widgets/*"]
+    // }
   },
   "files": [],
   "include": [],

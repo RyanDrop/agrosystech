@@ -10,10 +10,10 @@ import { BaseListComponent } from '../../../../shared/components/base-list.compo
 import { eDynamicField } from '../../../../widgets/components/dynamic-form/dynamic-field.enum';
 import { DynamicFormConfig } from '../../../../widgets/components/dynamic-form/dynamic-form-config.interface';
 import { DynamicFormComponent } from '../../../../widgets/components/dynamic-form/dynamic-form.component';
-import { Product } from './../list-products/list-products.page';
+import { iProduct } from './../../interfaces/products.interface';
 
 @Component({
-  selector: 'agro-form-clients',
+  selector: 'agro-form-products',
   imports: [
     DynamicFormComponent,
     NzButtonComponent,
@@ -29,7 +29,7 @@ import { Product } from './../list-products/list-products.page';
 export class FormProductsPage extends BaseListComponent implements AfterViewInit {
   protected isConsult = signal(false);
   protected isNew = signal(false);
-  protected product: WritableSignal<Product>;
+  protected product: WritableSignal<iProduct>;
 
   public ngAfterViewInit(): void {
     const isConsult = this.router.url.split('/')[4] === 'consult';

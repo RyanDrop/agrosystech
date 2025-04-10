@@ -12,16 +12,11 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
-import { BaseListComponent } from './../../../../shared/components/base-list.component';
+import { BaseListComponent } from '../../../../shared/components/base-list.component';
+import { iCustomers } from '../../interfaces/customers.interface';
 
-export interface Customer {
-  id: string;
-  name: string;
-  lastOrder: Date;
-  purchaseOrders?: [];
-}
 @Component({
-  selector: 'agro-list-clients',
+  selector: 'agro-list-customers',
   imports: [
     NzTableModule,
     NzDividerModule,
@@ -36,17 +31,17 @@ export interface Customer {
     NzButtonModule,
     NzAlertModule,
   ],
-  templateUrl: './list-clients.page.html',
-  styleUrl: './list-clients.page.scss',
+  templateUrl: './list-customers.page.html',
+  styleUrl: './list-customers.page.scss',
 })
-export class ListClientsPage extends BaseListComponent {
+export class ListCustomersPage extends BaseListComponent {
   protected readonly search = new FormControl('');
   private readonly notificationService = inject(NzNotificationService);
 
-  protected listOfData: Customer[] = JSON.parse(localStorage.getItem('customers') || '[]');
+  protected listOfData: iCustomers[] = JSON.parse(localStorage.getItem('customers') || '[]');
 
   protected deleteCustomer(id: string): void {
-    const findIndex = this.listOfData.findIndex((customer: Customer) => customer.id == id);
+    const findIndex = this.listOfData.findIndex((customer: iCustomers) => customer.id == id);
     this.listOfData.splice(findIndex, 1);
     localStorage.setItem('customers', JSON.stringify(this.listOfData));
     this.notificationService.success('Cliente excluído', 'O cliente foi excluído com sucesso', {

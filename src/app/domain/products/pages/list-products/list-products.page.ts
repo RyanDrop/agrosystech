@@ -13,13 +13,10 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 import { BaseListComponent } from '../../../../shared/components/base-list.component';
+import { iProduct } from './../../interfaces/products.interface';
 
-export interface Product {
-  id: string;
-  name: string;
-}
 @Component({
-  selector: 'agro-list-clients',
+  selector: 'agro-list-products',
   imports: [
     NzTableModule,
     NzDividerModule,
@@ -41,10 +38,10 @@ export class ListProductsPage extends BaseListComponent {
   protected readonly search = new FormControl('');
   private readonly notificationService = inject(NzNotificationService);
 
-  protected listOfData: Product[] = JSON.parse(localStorage.getItem('products') || '[]');
+  protected listOfData: iProduct[] = JSON.parse(localStorage.getItem('products') || '[]');
 
-  protected deleteCustomer(id: string): void {
-    const findIndex = this.listOfData.findIndex((customer: Product) => customer.id == id);
+  protected deleteProduct(id: string): void {
+    const findIndex = this.listOfData.findIndex((product: iProduct) => product.id == id);
     this.listOfData.splice(findIndex, 1);
     localStorage.setItem('products', JSON.stringify(this.listOfData));
     this.notificationService.success('Produto excluído', 'O produto foi excluído com sucesso', {
