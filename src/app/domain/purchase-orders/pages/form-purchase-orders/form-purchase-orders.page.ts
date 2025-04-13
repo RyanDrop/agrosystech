@@ -121,7 +121,7 @@ export class FormPurchaseOrdersPage extends BaseListComponent implements AfterVi
       label: 'Cliente',
       name: 'customerId',
       type: {
-        field: eDynamicField.SELECT,
+        field: eDynamicField.INPUT,
         typeField: 'text',
       },
       validations: [Validators.required],
