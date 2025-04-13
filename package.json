@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "nx serve",
+    "start": "node -r dotenv/config dot-env.js && nx serve ",
     "build": "nx build",
     "test": "nx test",
     "prepare": "husky",
@@ -25,6 +25,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@typestrong/ts-mockito": "^2.7.12",
     "cep-promise": "^4.4.0",
+    "dotenv": "^16.5.0",
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",
     "ng-zorro-antd": "^19.2.1",

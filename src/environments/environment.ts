@@ -1,4 +1,4 @@
-export const environment = {
-  SUPABASE_URL: '{{SUPABASE_URL}}',
-  SUPABASE_KEY: '{{SUPABASE_KEY}}',
-};
+export const environment = { 
+    SUPABASE_URL: ' undefined ', 
+    SUPABASE_KEY: ' undefined ', 
+}; 
