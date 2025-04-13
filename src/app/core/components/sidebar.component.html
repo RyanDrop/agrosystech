@@ -1,9 +1,9 @@
-<button (click)="isOpened.set(!isOpened())" (keydown.enter)="isOpened.set(!isOpened())">
-  <img
-    [src]="isOpened() ? 'assets/images/logo-text.png' : 'assets/images/logo.jpg'"
-    alt="Agrosystech Logo"
-    [class.opened]="this.computedIsOpen()"
-  />
+<button class="agro" (click)="isOpened.set(!isOpened())" (keydown.enter)="isOpened.set(!isOpened())">
+  @if (computedIsOpen()) {
+    <img [src]="'assets/images/logo-text.png'" alt="Agrosystech Logo" [class.opened]="isOpened()" />
+  } @else {
+    <i nz-icon nzType="double-right" nzTheme="outline"></i>
+  }
 </button>
 <nz-list nzItemLayout="horizontal" [nzLoading]="isLoading()" nzSize="small">
   @for (item of listData; track item) {

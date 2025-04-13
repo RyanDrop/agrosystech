@@ -42,7 +42,13 @@
                 </ng-template>
                 <ng-template #inputSuffixTemplate>
                   @if (field.addOnAfterIcon) {
-                    <button type="button" nz-button nzSearch (click)="field.onAddOnAfterClick && field.onAddOnAfterClick(form)">
+                    <button
+                      class="agro"
+                      type="button"
+                      nz-button
+                      nzSearch
+                      (click)="field.onAddOnAfterClick && field.onAddOnAfterClick(form)"
+                    >
                       <i agroIcon [agroType]="field.addOnAfterIcon" nz-typography nzType="secondary"></i>
                     </button>
                   }
@@ -56,6 +62,7 @@
                   [attr.placeholder]="field.placeholder"
                   [mask]="field.mask"
                   [suffix]="field.maskSuffix || ''"
+                  [prefix]="field.maskPrefix || ''"
                   [leadZeroDateTime]="true"
                   [dropSpecialCharacters]="!field.keepSpecialCharacters"
                   (ngModelChange)="field.onChange && field.onChange($event, form)"
@@ -96,7 +103,6 @@
                   [nzValue]="option.value"
                   [nzLabel]="option.label"
                   [nzDisabled]="option.disabled"
-                  nzCustomContent
                 >
                   @if (option.icon) {
                     <i agroIcon [agroType]="option.icon"></i>
@@ -186,7 +192,7 @@
                   </nz-avatar>
 
                   <nz-upload [nzShowUploadList]="false" [nzBeforeUpload]="beforeUploadAvatar" [nzAccept]="field.fileAccept">
-                    <button type="button" nz-button nzType="primary" nzShape="circle">
+                    <button class="agro" type="button" nz-button nzType="primary" nzShape="circle">
                       <span nz-icon nzType="plus"></span>
                     </button>
                   </nz-upload>
@@ -213,7 +219,7 @@
                 />
 
                 <nz-upload [nzShowUploadList]="false" [nzBeforeUpload]="beforeUploadImage" [nzAccept]="field.fileAccept">
-                  <button type="button" nz-button nzType="primary" nzShape="circle">
+                  <button class="agro" type="button" nz-button nzType="primary" nzShape="circle">
                     <span nz-icon nzType="plus"></span>
                   </button>
                 </nz-upload>

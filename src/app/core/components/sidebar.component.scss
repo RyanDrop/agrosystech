@@ -6,6 +6,8 @@
   button {
     background-color: transparent;
     border: none;
+    width: 100%;
+    min-height: 40px;
     &:hover {
       background-color: transparent;
     }
@@ -15,6 +17,16 @@
       cursor: pointer;
       &.opened {
         padding: 0 16px;
+      }
+    }
+    i {
+      color: var(--green);
+      font-size: 20px;
+      margin: 10px 0 0 0px;
+      transition: color 0.3s;
+      cursor: pointer;
+      &:hover {
+        color: var(--white-01);
       }
     }
   }

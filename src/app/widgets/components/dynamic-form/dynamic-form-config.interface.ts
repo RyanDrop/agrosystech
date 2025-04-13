@@ -53,6 +53,7 @@ export interface DynamicFormConfig {
   help?: string;
   mask?: string;
   maskSuffix?: string;
+  maskPrefix?: string;
   rows?: number;
   keepSpecialCharacters?: boolean;
   showForgotPassword?: boolean;

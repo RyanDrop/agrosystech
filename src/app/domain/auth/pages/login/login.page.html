@@ -3,7 +3,15 @@
   <section class="login">
     <img src="assets/images/logo-text.png" alt="Agrosystech Logo" class="logo" />
     <agro-dynamic-form [config]="loginConfig" />
-    <button nz-button nzType="primary" nzBlock (click)="login()" [disabled]="dynamicForm?.form?.invalid" class="max-w-687px">
+    <button
+      class="agro"
+      nz-button
+      nzType="primary"
+      nzBlock
+      (click)="login()"
+      [disabled]="dynamicForm?.form?.invalid"
+      class="max-w-687px"
+    >
       Login
     </button>
   </section>

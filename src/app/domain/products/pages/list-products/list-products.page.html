@@ -9,12 +9,13 @@
       <input type="text" nz-input placeholder="Pesquisar produto por nome" />
     </nz-input-group>
     <ng-template #suffixIconButton>
-      <button nz-button nzType="primary" nzSearch><nz-icon nzType="search" /></button>
+      <button class="agro" nz-button nzType="primary" nzSearch><nz-icon nzType="search" /></button>
     </ng-template>
     <button
       nz-button
+      class="agro"
       nzType="primary"
-      class="ml-4"
+      class="agro ml-4"
       (click)="navigateTo('/products/form')"
       (keydown.enter)="navigateTo('/products/form')"
     >

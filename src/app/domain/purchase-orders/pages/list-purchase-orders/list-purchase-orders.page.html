@@ -9,12 +9,12 @@
       <input type="text" nz-input placeholder="Pesquisar pedido por data" />
     </nz-input-group>
     <ng-template #suffixIconButton>
-      <button nz-button nzType="primary" nzSearch><nz-icon nzType="search" /></button>
+      <button class="agro" nz-button nzType="primary" nzSearch><nz-icon nzType="search" /></button>
     </ng-template>
     <button
       nz-button
       nzType="primary"
-      class="ml-4"
+      class="agro ml-4"
       (click)="navigateTo('/purchase-orders/form')"
       (keydown.enter)="navigateTo('/purchase-orders/form')"
     >
@@ -25,14 +25,18 @@
   <nz-table #basicTable [nzData]="listOfData">
     <thead>
       <tr>
-        <th>Nome</th>
+        <th>Data do Pedido</th>
+        <th>Cliente</th>
+        <th>Status</th>
         <th>Ações</th>
       </tr>
     </thead>
     <tbody>
       @for (data of basicTable.data; track data) {
         <tr class="table-row">
-          <td>{{ data.name }}</td>
+          <td>{{ data.datePurchase | date: 'dd/MM/yyyy ' }}</td>
+          <td>{{ data.customerId }}</td>
+          <td>{{ data.status }}</td>
           <td>
             <nz-icon
               nzType="eye"
@@ -60,6 +64,15 @@
               nz-tooltip
               nzTooltipColor="#178a0c"
               (click)="deleteOrder(data.id)"
+            />
+            <nz-icon
+              nzType="file-pdf"
+              nzTheme="outline"
+              nzTooltipTitle="Gerar PDF"
+              nzTooltipPlacement="bottom"
+              nz-tooltip
+              nzTooltipColor="#178a0c"
+              (click)="generatePDF(data)"
             />
           </td>
         </tr>

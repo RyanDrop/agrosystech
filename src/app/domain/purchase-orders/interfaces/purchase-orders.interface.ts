@@ -1,5 +1,19 @@
-// eslint-disable-next-line @typescript-eslint/naming-convention
+/* eslint-disable @typescript-eslint/naming-convention */
+import { iProduct } from '../../products/interfaces/products.interface';
+
 export interface iOrder {
   id: string;
-  name: string;
+  datePurchase: string;
+  customerId: string;
+  totalPrice: number;
+  status: iOrderStatus;
+  productsOrdered: iProductOrder[];
 }
+
+export interface iProductOrder extends iProduct {
+  quantity: number;
+  price: number;
+  totalPrice: number;
+}
+
+export type iOrderStatus = 'Criado' | 'Entregue' | 'Pago' | 'Cancelado';

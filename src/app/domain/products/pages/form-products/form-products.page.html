@@ -10,10 +10,14 @@
 </main>
 <nz-divider></nz-divider>
 <footer class="crud">
-  <button nz-button nzType="primary" nzDanger class="mr-4" (click)="cancel('products')">Voltar</button>
+  <button class="agro" nz-button nzType="primary" nzDanger class="mr-4" (click)="cancel('products')">Voltar</button>
   @if (isConsult()) {
-    <button nz-button nzType="primary" (click)="navigateTo('/products/form/' + product().id + '/edit')">Editar</button>
+    <button class="agro" nz-button nzType="primary" (click)="navigateTo('/products/form/' + product().id + '/edit')">
+      Editar
+    </button>
   } @else {
-    <button nz-button nzType="primary" (click)="submit('products')" [disabled]="dynamicForm?.form?.invalid">Confirmar</button>
+    <button class="agro" nz-button nzType="primary" (click)="submit('products')" [disabled]="dynamicForm?.form?.invalid">
+      Confirmar
+    </button>
   }
 </footer>

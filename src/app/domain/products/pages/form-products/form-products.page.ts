@@ -72,16 +72,16 @@ export class FormProductsPage extends BaseListComponent implements AfterViewInit
     const currentForm = JSON.parse(localStorage.getItem(form) || '[]');
     if (this.isNew()) {
       localStorage.setItem('id', (+(localStorage.getItem('id') || 0) + 1).toString());
-      const customer = {
+      const product = {
         id: localStorage.getItem('id'),
         ...this.dynamicForm.form.getRawValue(),
         lastOrder: new Date(),
       };
 
-      currentForm.push(customer);
+      currentForm.push(product);
       localStorage.setItem(form, JSON.stringify(currentForm));
     } else {
-      const findIndex = currentForm.findIndex((customer: any) => customer.id == this.product().id);
+      const findIndex = currentForm.findIndex((product: any) => product.id == this.product().id);
       const product = {
         id: this.product().id,
         ...this.dynamicForm.form.getRawValue(),
