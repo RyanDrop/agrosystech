@@ -11,9 +11,10 @@ export interface iOrder {
 }
 
 export interface iProductOrder extends iProduct {
-  quantity: number;
-  price: number;
-  totalPrice: number;
+  quantity: number | null;
+  weight: number | null;
+  price: number | null;
+  totalPrice: number | null;
 }
 
 export type iOrderStatus = 'Criado' | 'Entregue' | 'Pago' | 'Cancelado';

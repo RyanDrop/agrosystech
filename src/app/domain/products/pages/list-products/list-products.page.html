@@ -26,6 +26,7 @@
   <nz-table #basicTable [nzData]="listOfData">
     <thead>
       <tr>
+        <th>Em.</th>
         <th>Nome</th>
         <th>Ações</th>
       </tr>
@@ -33,8 +34,9 @@
     <tbody>
       @for (data of basicTable.data; track data) {
         <tr class="table-row">
+          <td class="w-0">{{ data.package }}</td>
           <td>{{ data.name }}</td>
-          <td>
+          <td class="actions">
             <nz-icon
               nzType="eye"
               nzTheme="outline"
@@ -53,7 +55,7 @@
               nzTooltipColor="#178a0c"
               (click)="navigateTo('/products/form/' + data.id + '/edit')"
             />
-            <nz-icon
+            <!-- <nz-icon
               nzType="delete"
               nzTheme="outline"
               nzTooltipTitle="Excluir"
@@ -61,7 +63,7 @@
               nz-tooltip
               nzTooltipColor="#178a0c"
               (click)="deleteProduct(data.id)"
-            />
+            /> -->
           </td>
         </tr>
       }

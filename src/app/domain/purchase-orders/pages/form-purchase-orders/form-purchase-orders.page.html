@@ -6,24 +6,38 @@
 <main class="crud">
   <div class="form-body">
     <agro-dynamic-form [config]="orderConfig" />
-    <nz-table #basicTable [nzData]="table()">
+    <nz-table #basicTable [nzData]="table()" [nzShowPagination]="false" [nzPageSize]="productsOrdered.length"> 
       <thead>
         <tr>
+          <th class="w-0">Em.</th>
           <th>Produto</th>
           <th>Quantidade</th>
           <th>Preço</th>
-          <th>Total</th>
+          <th>SubTotal</th>
         </tr>
       </thead>
       <tbody>
         @for (data of basicTable.data; track data; let index = $index) {
           <tr class="table-row">
             @let formGroup = productsOrdered.controls[index].controls;
+            <td>{{ data.package }}</td>
             <td>{{ data.name }}</td>
             <td>
-              <nz-input-group>
-                <input type="text" nz-input [formControl]="formGroup.quantity" mask="0*" max="999999" placeholder="0" />
-              </nz-input-group>
+              @if(data.wayCountig === "Q"){
+                <nz-input-group>
+                  <input type="text" nz-input [formControl]="formGroup.quantity" mask="0*" max="999999" placeholder="Digite a quantidade" />
+                </nz-input-group>
+              } @else {
+                <div class="flex">
+                  <nz-input-group class="mr-2">
+                   <input type="text" nz-input [formControl]="formGroup.quantity" mask="0*" max="999999" placeholder="Digite a quantidade" />
+                  </nz-input-group>
+                  <nz-input-group>
+                    <input type="text" nz-input [formControl]="formGroup.weight"  mask="separator.3" max="999999"placeholder="Digite o peso" suffix=" kg" />
+                  </nz-input-group>
+              </div>
+              }
+            
             </td>
 
             <td>
@@ -32,7 +46,7 @@
               </nz-input-group>
             </td>
 
-            <td>{{ (formGroup.quantity.value || 0)  * (formGroup.price.value || 0) | currency: 'BRL' }}</td>
+            <td>{{(data.wayCountig === "Q" ? (formGroup.quantity.value || 0)  * (formGroup.price.value || 0)  : (formGroup.weight.value || 0) * (formGroup.price.value || 0)) | currency: 'BRL' }}</td>
           </tr>
         }
       </tbody>

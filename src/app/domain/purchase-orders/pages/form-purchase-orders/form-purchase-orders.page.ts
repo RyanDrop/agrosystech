@@ -45,15 +45,17 @@ export class FormPurchaseOrdersPage extends BaseListComponent implements AfterVi
   protected order: WritableSignal<iOrder>;
   protected table = signal<iProductOrder[]>([]);
   protected products: iProduct[] = [];
-  protected customers = signal<iProduct[]>([]);
 
   public productsOrdered = new FormArray<
     FormGroup<{
-      id: FormControl<string | null>;
-      name: FormControl<string | null>;
+      id: FormControl<string>;
+      name: FormControl<string>;
       price: FormControl<number | null>;
       quantity: FormControl<number | null>;
+      weight: FormControl<number | null>;
       totalPrice: FormControl<number | null>;
+      package: FormControl<string>;
+      wayCountig: FormControl<string>;
     }>
   >([]);
 
@@ -63,20 +65,20 @@ export class FormPurchaseOrdersPage extends BaseListComponent implements AfterVi
     this.isConsult.set(isConsult);
     this.isNew.set(isNew);
 
-    const findCustomers = JSON.parse(localStorage.getItem('customers') || '[]');
-    this.customers.set(findCustomers);
-
     const findProducts = JSON.parse(localStorage.getItem('products') || '[]');
     if (findProducts.length > 0) {
-      this.products = findProducts;
+      this.products = findProducts.sort((a: iProduct, b: iProduct) => a.name.localeCompare(b.name));
 
       this.products.forEach((product: iProduct) => {
         const productGroup = new FormGroup({
-          id: new FormControl(product.id || ''),
-          name: new FormControl(product.name || ''),
+          id: new FormControl<string>(product.id, { nonNullable: true }),
+          name: new FormControl<string>(product.name, { nonNullable: true }),
           price: new FormControl<number | null>(null),
-          quantity: new FormControl<number | null>(null, [Validators.required]),
+          quantity: new FormControl<number | null>(null),
+          weight: new FormControl<number | null>(null),
           totalPrice: new FormControl<number | null>(null),
+          package: new FormControl<string>(product.package, { nonNullable: true }),
+          wayCountig: new FormControl<string>(product.wayCountig, { nonNullable: true }),
         });
         this.productsOrdered.push(productGroup);
       });
@@ -84,14 +86,13 @@ export class FormPurchaseOrdersPage extends BaseListComponent implements AfterVi
       this.table.set(this.productsOrdered.value as iProductOrder[]);
 
       this.productsOrdered.valueChanges.pipe(startWith(this.productsOrdered.value)).subscribe((value) => {
-        console.log(value);
         const total = value.reduce((acc: number, item: any) => {
           const price = typeof +item.price === 'number' ? +item.price : 0;
           const quantity = typeof +item.quantity === 'number' ? +item.quantity : 0;
-          return acc + price * quantity;
+          const weight = typeof +item.weight === 'number' ? +item.weight : 0;
+          return acc + price * (item.wayCountig === 'Q' ? quantity : weight);
         }, 0);
 
-        console.log(total);
         this.dynamicForm.form.get('totalPrice')?.setValue(total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }));
       });
     }
@@ -112,6 +113,13 @@ export class FormPurchaseOrdersPage extends BaseListComponent implements AfterVi
         }
       }
     }
+
+    const productsNameAndPackage = findProducts.map((product: iProduct) => ({
+      name: product.name,
+      package: product.package,
+    }));
+
+    this.productsOrdered.patchValue(productsNameAndPackage);
   }
 
   @ViewChild(DynamicFormComponent) public dynamicForm!: DynamicFormComponent;
@@ -121,7 +129,7 @@ export class FormPurchaseOrdersPage extends BaseListComponent implements AfterVi
       label: 'Cliente',
       name: 'customerId',
       type: {
-        field: eDynamicField.INPUT,
+        field: eDynamicField.SELECT,
         typeField: 'text',
       },
       validations: [Validators.required],
@@ -129,9 +137,9 @@ export class FormPurchaseOrdersPage extends BaseListComponent implements AfterVi
       placeholder: 'Selecione o cliente',
       select: {
         showSearch: true,
-        options: this.customers().map((customer: any) => ({
+        options: JSON.parse(localStorage.getItem('customers') || '[]').map((customer: any) => ({
           label: customer.name,
-          value: customer.id,
+          value: customer.name,
         })),
       },
     },
@@ -144,6 +152,7 @@ export class FormPurchaseOrdersPage extends BaseListComponent implements AfterVi
       },
       validations: [Validators.required],
       size: 4,
+      placeholder: 'Selecione a data do pedido',
     },
     {
       label: 'Status',
@@ -154,7 +163,7 @@ export class FormPurchaseOrdersPage extends BaseListComponent implements AfterVi
       },
       validations: [Validators.required],
       size: 6,
-      disabled: true,
+      disabled: !this.router.url.split('/')[4],
       initialValue: 'Criando Pedido',
     },
     {
@@ -175,9 +184,14 @@ export class FormPurchaseOrdersPage extends BaseListComponent implements AfterVi
     const currentForm = JSON.parse(localStorage.getItem(form) || '[]');
     if (this.isNew()) {
       localStorage.setItem('id', (+(localStorage.getItem('id') || 0) + 1).toString());
+      const { customerId, datePurchase, totalPrice } = this.dynamicForm.form.getRawValue();
+
       const order = {
-        id: localStorage.getItem('id'),
-        ...this.dynamicForm.form.getRawValue(),
+        id: localStorage.getItem('id') || '',
+        datePurchase,
+        customerId,
+        totalPrice,
+        status: 'Criado',
         productsOrdered: this.productsOrdered.value,
       };
 
@@ -188,7 +202,7 @@ export class FormPurchaseOrdersPage extends BaseListComponent implements AfterVi
       const order = {
         id: this.order().id,
         ...this.dynamicForm.form.getRawValue(),
-        productsOrdered: this.productsOrdered.value,
+        productsOrdered: this.productsOrdered.getRawValue(),
       };
       currentForm[findIndex] = order;
       localStorage.setItem(form, JSON.stringify(currentForm));

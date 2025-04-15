@@ -5,7 +5,7 @@ import { Component, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import autoTable, { Styles } from 'jspdf-autotable';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -59,27 +59,71 @@ export class ListPurchaseOrdersPage extends BaseListComponent {
   protected generatePDF(order: iOrder): void {
     const doc = new jsPDF();
 
-    doc.addImage('assets/images/logo-text.png', 'PNG', 80, 0, 50, 20);
+    // Adiciona imagem na lateral esquerda
+    const imageX = 14; // margem da esquerda
+    const imageY = 5; // topo
+    const imageWidth = 20;
+    const imageHeight = 20;
 
+    doc.addImage('assets/images/logo-celinho.png', 'PNG', imageX, imageY, imageWidth, imageHeight);
+
+    // Agora desenha a tabela do lado direito da imagem
     autoTable(doc, {
-      head: [['Cliente', 'Data do Pedido', 'Total']],
-      body: [[order.customerId, new Date(order.datePurchase).toLocaleDateString('pt-BR'), `R$ ${order.totalPrice}`]],
-      headStyles: { fillColor: '#82c25e' },
-      startY: 20,
+      head: [[`Pedido #${order.id}`]],
+      body: [[`${order.customerId} - ${new Date(order.datePurchase).toLocaleDateString('pt-BR')}`]],
+      headStyles: { fillColor: '#82c25e', fontStyle: 'bold', halign: 'left' },
+      columnStyles: { 0: { fontStyle: 'bold', halign: 'left' } },
+      startY: imageY,
+      margin: { left: imageX + imageWidth + 10 }, // empurra a tabela para a direita da imagem
     });
 
-    const tableData = order.productsOrdered.map((product) => [
-      product.name,
-      product.quantity,
-      `R$ ${product.price.toFixed(2)}`,
-      `R$ ${(product.price * +product.quantity).toFixed(2)}`,
-    ]);
+    const filterQuantityOrWeightEqualEmptyOrZero = order.productsOrdered.filter((product) => {
+      const hasQuantity = product.quantity && typeof +product.quantity === 'number' && product.quantity > 0;
+      const hasWeight = product.weight && typeof +product.weight === 'number' && product.weight > 0;
+      return hasQuantity || hasWeight;
+    });
+
+    const tableData = filterQuantityOrWeightEqualEmptyOrZero.map((product) => {
+      const price = product.price && typeof +product.price === 'number' ? +product.price : 0;
+      const quantity = product.quantity && typeof +product.quantity === 'number' ? +product.quantity : 0;
+      const weight = product.weight && typeof +product.weight === 'number' ? +product.weight : 0;
+      return [
+        product.package,
+        product.name,
+        `${quantity}${weight ? ` - ${weight}kg` : ''}`,
+        `${price == 0 ? '' : `R$ ${price.toFixed(2)}`}`,
+        `${price == 0 ? '' : `R$ ${(price * (product.wayCountig === 'Q' ? quantity : weight)).toFixed(2)}`}`,
+      ];
+    });
 
     autoTable(doc, {
-      head: [['Nome', 'Quantidade', 'Preço', 'Total']],
+      head: [['Em.', 'Nome', 'Quantidade', 'Preço', 'SubTotal']],
       body: tableData,
-      headStyles: { fillColor: '#82c25e' },
-      startY: 40,
+      headStyles: { fillColor: '#82c25e', halign: 'justify' },
+      columnStyles: {
+        ...tableData.map(() => ({ fontSize: 8 })),
+      } as {
+        [key: string]: Partial<Styles>;
+      },
+    });
+
+    const filterProductsOfCx = order.productsOrdered.filter((product) => {
+      return product.package === 'CX';
+    });
+
+    const quantityOfCx = filterProductsOfCx.reduce((acc: number, item: any) => {
+      const quantity = typeof +item.quantity === 'number' ? +item.quantity : 0;
+      return acc + quantity;
+    }, 0);
+
+    autoTable(doc, {
+      head: [['Caixas', 'Total']],
+      body: [[quantityOfCx, `${order.totalPrice}`]],
+      headStyles: { fillColor: '#82c25e', halign: 'right', fontStyle: 'bold' },
+      columnStyles: {
+        0: { halign: 'right', fontStyle: 'bold' },
+        1: { halign: 'right', fontStyle: 'bold' },
+      },
     });
 
     doc.save(`Pedido:${order.customerId} - Data: ${new Date(order.datePurchase).toLocaleDateString('pt-BR')}.pdf`);

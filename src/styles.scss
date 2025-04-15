@@ -2,7 +2,6 @@
 @use 'variables' as *;
 
 * {
-  bottom: 0;
   padding: 0;
   margin: 0;
   box-sizing: border-box;
@@ -145,10 +144,6 @@ button.agro:not(:disabled, .ant-btn-dangerous) {
   }
 }
 
-.ant-notification-notice-icon {
-  top: 0;
-}
-
 nz-select .ant-select-dropdown {
   z-index: 9999;
 }
@@ -168,4 +163,17 @@ header.crud {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background-color: #c2d9c1;
+}
+
+.ant-table {
+  overflow: auto;
+}
+
+td.actions {
+  display: flex;
+  min-height: 80px;
 }

@@ -27,9 +27,6 @@
     <thead>
       <tr>
         <th>Nome</th>
-        @if (!isMobile()) {
-          <th>Último Pedido</th>
-        }
         <th>Ações</th>
       </tr>
     </thead>
@@ -37,11 +34,7 @@
       @for (data of basicTable.data; track data) {
         <tr class="table-row">
           <td>{{ data.name }}</td>
-          @if (!isMobile()) {
-            <td>{{ data.lastOrder | date: 'dd/MM/yyyy HH:mm' }}</td>
-          }
-
-          <td>
+          <td class="actions">
             <nz-icon
               nzType="eye"
               nzTheme="outline"
@@ -60,7 +53,7 @@
               nzTooltipColor="#178a0c"
               (click)="navigateTo('/customers/form/' + data.id + '/edit')"
             />
-            <nz-icon
+            <!-- <nz-icon
               nzType="delete"
               nzTheme="outline"
               nzTooltipTitle="Excluir"
@@ -68,7 +61,7 @@
               nz-tooltip
               nzTooltipColor="#178a0c"
               (click)="deleteCustomer(data.id)"
-            />
+            /> -->
           </td>
         </tr>
       }

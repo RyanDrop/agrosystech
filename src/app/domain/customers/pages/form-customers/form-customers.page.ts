@@ -65,6 +65,7 @@ export class FormCustomersPage extends BaseListComponent implements AfterViewIni
       },
       validations: [Validators.required, Validators.minLength(3), Validators.maxLength(100)],
       size: 8,
+      placeholder: 'Digite o nome do cliente',
     },
     {
       label: 'E-mail',
@@ -75,6 +76,7 @@ export class FormCustomersPage extends BaseListComponent implements AfterViewIni
       },
       validations: [Validators.email, Validators.maxLength(255)],
       size: 8,
+      placeholder: 'Digite o e-mail do cliente',
     },
     {
       label: 'Telefone',
@@ -86,6 +88,7 @@ export class FormCustomersPage extends BaseListComponent implements AfterViewIni
       mask: '(00) 00000-0000||(00) 0000-0000',
       validations: [],
       size: 8,
+      placeholder: 'Digite o telefone/celular do cliente',
     },
   ];
 

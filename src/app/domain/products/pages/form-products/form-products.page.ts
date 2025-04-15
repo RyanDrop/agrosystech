@@ -64,7 +64,70 @@ export class FormProductsPage extends BaseListComponent implements AfterViewInit
         typeField: 'text',
       },
       validations: [Validators.required, Validators.minLength(3), Validators.maxLength(100)],
-      size: 24,
+      size: 16,
+      placeholder: 'Digite o nome do produto',
+    },
+    {
+      label: 'Embalagem',
+      name: 'package',
+      type: {
+        field: eDynamicField.SELECT,
+        typeField: 'text',
+      },
+      validations: [Validators.required],
+      select: {
+        hideClear: true,
+        showSearch: true,
+        options: [
+          {
+            label: 'CX',
+            value: 'CX',
+          },
+          {
+            label: 'CXP',
+            value: 'CXP',
+          },
+          {
+            label: 'UN',
+            value: 'UN',
+          },
+          {
+            label: 'BDJ',
+            value: 'BDJ',
+          },
+          {
+            label: 'SC',
+            value: 'SC',
+          },
+        ],
+      },
+      initialValue: 'CX',
+      size: 4,
+    },
+    {
+      label: 'Forma de Calcular',
+      name: 'wayCountig',
+      type: {
+        field: eDynamicField.RADIO,
+        typeField: 'text',
+      },
+      validations: [Validators.required],
+      select: {
+        hideClear: true,
+        showSearch: true,
+        options: [
+          {
+            label: 'Quantidade',
+            value: 'Q',
+          },
+          {
+            label: 'Peso',
+            value: 'W',
+          },
+        ],
+      },
+      initialValue: 'Q',
+      size: 4,
     },
   ];
 
@@ -75,7 +138,6 @@ export class FormProductsPage extends BaseListComponent implements AfterViewInit
       const product = {
         id: localStorage.getItem('id'),
         ...this.dynamicForm.form.getRawValue(),
-        lastOrder: new Date(),
       };
 
       currentForm.push(product);
