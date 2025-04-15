@@ -171,9 +171,10 @@ header.crud {
 
 .ant-table {
   overflow: auto;
+  text-wrap-mode: nowrap;
 }
 
 td.actions {
   display: flex;
-  min-height: 80px;
+  min-height: 55px;
 }
