@@ -63,7 +63,6 @@ export class SubscriptionService {
   public async submit() {
     try {
       const user = await this.createAdminUser(this.getAdminForm());
-      console.log(user);
       if (!user) throw new Error('Usuário não encontrado');
       const company = await this.createCompany(this.getCompanyForm(), user);
       await this.createSubscription(company.id);
@@ -143,7 +142,6 @@ export class SubscriptionService {
       .eq('document', document)
       .single();
 
-    console.log(company);
     if (companyError) throw new Error('Empresa já cadastrada');
 
     const user_id = user.id;
@@ -154,7 +152,6 @@ export class SubscriptionService {
     };
 
     const { data: userCompany } = await this.userCompanyApi.select().eq('company_id', company.id).eq('user_id', user_id).single();
-    console.log(userCompany);
     if (userCompany) return company;
 
     const { error: userCompanyError } = await this.userCompanyApi.insert(userCompanyPayload);

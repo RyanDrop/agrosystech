@@ -1,13 +1,18 @@
 import { Route } from '@angular/router';
 
+import { isLoggedInGuard } from './core/guards/is-logged-in/is-logged-in.guard';
+import { isNotLoggedInGuard } from './core/guards/is-not-logged/is-not-logged.guard';
+
 export const APP_ROUTES: Route[] = [
   {
     path: 'subscription',
     loadChildren: () => import('./domain/subscription/subscription.routes').then((m) => m.SUBSCRIPTION_ROUTES),
+    canActivate: [isLoggedInGuard],
   },
   {
     path: 'auth',
     loadComponent: () => import('./core/layout/auth/auth.layout').then((m) => m.AuthLayout),
+    canActivate: [isLoggedInGuard],
     children: [
       {
         path: '',
@@ -16,12 +21,14 @@ export const APP_ROUTES: Route[] = [
       {
         path: 'reset-password',
         loadComponent: () => import('./core/pages/reset-password/reset-password.page').then((m) => m.ResetPasswordPage),
+        canActivate: [isLoggedInGuard],
       },
     ],
   },
   {
     path: '',
     loadComponent: () => import('./core/layout/dashboard/dashboard.layout').then((m) => m.DashboardLayout),
+    canActivate: [isNotLoggedInGuard],
     children: [
       {
         path: '',
