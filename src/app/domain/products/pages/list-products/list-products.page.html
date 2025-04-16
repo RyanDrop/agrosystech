@@ -23,7 +23,7 @@
     </button>
   </div>
   <nz-divider></nz-divider>
-  <nz-table #basicTable [nzData]="listOfData">
+  <nz-table #basicTable [nzData]="listOfData" [nzLoading]="loadingService.loading()">
     <thead>
       <tr>
         <th>Em.</th>
@@ -55,7 +55,7 @@
               nzTooltipColor="#178a0c"
               (click)="navigateTo('/products/form/' + data.id + '/edit')"
             />
-            <!-- <nz-icon
+            <nz-icon
               nzType="delete"
               nzTheme="outline"
               nzTooltipTitle="Excluir"
@@ -63,7 +63,7 @@
               nz-tooltip
               nzTooltipColor="#178a0c"
               (click)="deleteProduct(data.id)"
-            /> -->
+            />
           </td>
         </tr>
       }

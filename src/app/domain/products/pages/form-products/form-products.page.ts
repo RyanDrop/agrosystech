@@ -1,15 +1,16 @@
-import { AfterViewInit, Component, signal, ViewChild, WritableSignal } from '@angular/core';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { ReactiveFormsModule, Validators } from '@angular/forms';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { from } from 'rxjs';
 
 import { BaseListComponent } from '../../../../shared/components/base-list.component';
 import { eDynamicField } from '../../../../widgets/components/dynamic-form/dynamic-field.enum';
-import { DynamicFormConfig } from '../../../../widgets/components/dynamic-form/dynamic-form-config.interface';
 import { DynamicFormComponent } from '../../../../widgets/components/dynamic-form/dynamic-form.component';
+import { AgroProductsApi } from '../../apis/products.api';
 import { iProduct } from './../../interfaces/products.interface';
 
 @Component({
@@ -26,133 +27,111 @@ import { iProduct } from './../../interfaces/products.interface';
   templateUrl: './form-products.page.html',
   styleUrl: './form-products.page.scss',
 })
-export class FormProductsPage extends BaseListComponent implements AfterViewInit {
-  protected isConsult = signal(false);
-  protected isNew = signal(false);
+export class FormProductsPage extends BaseListComponent {
   protected product: WritableSignal<iProduct>;
+  private readonly productApi = inject(AgroProductsApi);
 
-  public ngAfterViewInit(): void {
-    const isConsult = this.router.url.split('/')[4] === 'consult';
-    const isNew = this.router.url.split('/')[4] === undefined;
-    this.isConsult.set(isConsult);
-    this.isNew.set(isNew);
+  public override async getData() {
+    this.dynamicFormConfig = [
+      {
+        label: 'Nome',
+        name: 'name',
+        type: {
+          field: eDynamicField.INPUT,
+          typeField: 'text',
+        },
+        validations: [Validators.required, Validators.minLength(3), Validators.maxLength(100)],
+        size: 16,
+        placeholder: 'Digite o nome do produto',
+      },
+      {
+        label: 'Embalagem',
+        name: 'package',
+        type: {
+          field: eDynamicField.SELECT,
+          typeField: 'text',
+        },
+        validations: [Validators.required],
+        select: {
+          hideClear: true,
+          showSearch: true,
+          options: [
+            {
+              label: 'CX',
+              value: 'CX',
+            },
+            {
+              label: 'CXP',
+              value: 'CXP',
+            },
+            {
+              label: 'UN',
+              value: 'UN',
+            },
+            {
+              label: 'BDJ',
+              value: 'BDJ',
+            },
+            {
+              label: 'SC',
+              value: 'SC',
+            },
+          ],
+        },
+        initialValue: 'CX',
+        size: 4,
+      },
+      {
+        label: 'Forma de Calcular',
+        name: 'way_counting',
+        type: {
+          field: eDynamicField.RADIO,
+          typeField: 'text',
+        },
+        validations: [Validators.required],
+        select: {
+          hideClear: true,
+          showSearch: true,
+          options: [
+            {
+              label: 'Quantidade',
+              value: 'Q',
+            },
+            {
+              label: 'Peso',
+              value: 'W',
+            },
+          ],
+        },
+        initialValue: 'Q',
+        size: 4,
+      },
+    ];
 
-    const findOnLocalStorage = JSON.parse(localStorage.getItem('products') || '[]');
-    if (findOnLocalStorage.length > 0) {
-      const id = this.router.url.split('/')[3];
-      if (id) {
-        const product = findOnLocalStorage.find((product: any) => product.id == id);
-        if (product) {
-          this.dynamicForm.form.patchValue(product);
-          this.product = signal(product);
-          if (isConsult) {
-            this.dynamicForm.form.disable();
-          }
-        }
-      }
+    if (!this.isNew() && this.id()) {
+      from(this.productApi.getProductById(this.id())).subscribe((product) => {
+        this.product = signal(product);
+        this.dynamicForm.form.patchValue(product);
+        if (this.isConsult()) this.dynamicForm.form.disable();
+      });
     }
   }
 
-  @ViewChild(DynamicFormComponent) public dynamicForm!: DynamicFormComponent;
-
-  public productConfig: DynamicFormConfig[] = [
-    {
-      label: 'Nome',
-      name: 'name',
-      type: {
-        field: eDynamicField.INPUT,
-        typeField: 'text',
-      },
-      validations: [Validators.required, Validators.minLength(3), Validators.maxLength(100)],
-      size: 16,
-      placeholder: 'Digite o nome do produto',
-    },
-    {
-      label: 'Embalagem',
-      name: 'package',
-      type: {
-        field: eDynamicField.SELECT,
-        typeField: 'text',
-      },
-      validations: [Validators.required],
-      select: {
-        hideClear: true,
-        showSearch: true,
-        options: [
-          {
-            label: 'CX',
-            value: 'CX',
-          },
-          {
-            label: 'CXP',
-            value: 'CXP',
-          },
-          {
-            label: 'UN',
-            value: 'UN',
-          },
-          {
-            label: 'BDJ',
-            value: 'BDJ',
-          },
-          {
-            label: 'SC',
-            value: 'SC',
-          },
-        ],
-      },
-      initialValue: 'CX',
-      size: 4,
-    },
-    {
-      label: 'Forma de Calcular',
-      name: 'wayCountig',
-      type: {
-        field: eDynamicField.RADIO,
-        typeField: 'text',
-      },
-      validations: [Validators.required],
-      select: {
-        hideClear: true,
-        showSearch: true,
-        options: [
-          {
-            label: 'Quantidade',
-            value: 'Q',
-          },
-          {
-            label: 'Peso',
-            value: 'W',
-          },
-        ],
-      },
-      initialValue: 'Q',
-      size: 4,
-    },
-  ];
-
-  protected submit(form: string) {
-    const currentForm = JSON.parse(localStorage.getItem(form) || '[]');
+  protected async submit() {
     if (this.isNew()) {
-      localStorage.setItem('id', (+(localStorage.getItem('id') || 0) + 1).toString());
-      const product = {
-        id: localStorage.getItem('id'),
-        ...this.dynamicForm.form.getRawValue(),
-      };
-
-      currentForm.push(product);
-      localStorage.setItem(form, JSON.stringify(currentForm));
+      const data = await this.productApi.insertProduct(this.dynamicForm.form.getRawValue());
+      if (data) {
+        this.dynamicForm.form.reset();
+        this.notificationService.success('Sucesso', 'Produto cadastrado com sucesso');
+        this.router.navigate(['/', 'products', 'list']);
+      }
     } else {
-      const findIndex = currentForm.findIndex((product: any) => product.id == this.product().id);
-      const product = {
-        id: this.product().id,
-        ...this.dynamicForm.form.getRawValue(),
-      };
-      currentForm[findIndex] = product;
-      localStorage.setItem(form, JSON.stringify(currentForm));
+      const data = await this.productApi.updateProduct(this.id(), this.dynamicForm.form.getRawValue());
+      if (data) {
+        this.dynamicForm.form.reset();
+        this.notificationService.success('Sucesso', 'Produto atualizado com sucesso');
+        this.router.navigate(['/', 'products', 'list']);
+      }
     }
-
-    this.dynamicForm.form.reset();
-    this.router.navigate(['/', 'products', 'list']);
   }
 }

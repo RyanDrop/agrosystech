@@ -5,7 +5,7 @@
 <nz-divider></nz-divider>
 <main class="crud">
   <div class="form-body">
-    <agro-dynamic-form [config]="customerConfig" />
+    <agro-dynamic-form [config]="dynamicFormConfig" />
   </div>
 </main>
 <nz-divider></nz-divider>
@@ -16,8 +16,6 @@
       Editar
     </button>
   } @else {
-    <button class="agro" nz-button nzType="primary" (click)="submit('customers')" [disabled]="dynamicForm?.form?.invalid">
-      Confirmar
-    </button>
+    <button class="agro" nz-button nzType="primary" (click)="submit()" [disabled]="dynamicForm?.form?.invalid">Confirmar</button>
   }
 </footer>

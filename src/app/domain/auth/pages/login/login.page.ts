@@ -71,6 +71,11 @@ export class LoginPage {
       return;
     }
 
+    const { data: user_company } = await this.supabase.from('user_company').select('*').single();
+    if (user_company) {
+      localStorage.setItem('user_company', JSON.stringify(user_company));
+    }
+
     this.router.navigate(['/']);
   }
 }

@@ -67,7 +67,10 @@ export class SubscriptionService {
       if (!user) throw new Error('Usuário não encontrado');
       const company = await this.createCompany(this.getCompanyForm(), user);
       await this.createSubscription(company.id);
-
+      const { data: user_company } = await this.supabase.from('user_company').select('*').single();
+      if (user_company) {
+        localStorage.setItem('user_company', JSON.stringify(user_company));
+      }
       this.router.navigate(['/']);
       this.form.reset();
     } catch (error: unknown) {

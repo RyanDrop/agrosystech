@@ -1,14 +1,4 @@
 :host {
-  header.crud {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    h1 {
-      margin-bottom: 0;
-      line-height: 1.2;
-    }
-  }
-
   nz-table {
     .anticon {
       margin: 0 10px;

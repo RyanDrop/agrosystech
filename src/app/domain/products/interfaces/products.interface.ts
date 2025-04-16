@@ -3,7 +3,8 @@ export interface iProduct {
   id: string;
   name: string;
   package: ProductPackage;
-  wayCountig: WayCountig;
+  way_counting: WayCountig;
+  company_id?: string;
 }
 
 export type ProductPackage = 'CX' | 'CXP' | 'SC' | 'BDJ' | 'UN';

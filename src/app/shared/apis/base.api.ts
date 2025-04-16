@@ -1,4 +1,5 @@
 import { inject, Injectable } from '@angular/core';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 /* eslint-disable @typescript-eslint/naming-convention */
 import { HttpClient } from '@angular/common/http';
 
@@ -11,6 +12,7 @@ import { iBase } from './../interfaces/base.interface';
 })
 export abstract class BaseApi<T extends Partial<iBase>> {
   private readonly authService = inject(AuthService);
+  protected readonly notificationService = inject(NzNotificationService);
   protected http = inject(HttpClient);
 
   public supabase = injectSupabase();
@@ -18,21 +20,19 @@ export abstract class BaseApi<T extends Partial<iBase>> {
   constructor(protected tableName: string) {}
 
   public getById(id: string) {
-    return this.supabase.from(this.tableName).select('*').eq('id', id).match({ active: true }).single();
+    return this.supabase.from(this.tableName).select('*').eq('id', id).single();
   }
 
   public select(
     select = '*',
     options: { isAscending?: boolean; active?: boolean; orderByCreatedAt?: boolean } = {
       isAscending: true,
-      active: true,
       orderByCreatedAt: true,
     },
   ) {
-    if (options.active === undefined) options.active = true;
     if (options.isAscending === undefined) options.isAscending = true;
 
-    let query = this.supabase.from(this.tableName).select(select, { count: 'exact' }).eq('active', options.active);
+    let query = this.supabase.from(this.tableName).select(select, { count: 'exact' });
 
     if (options.orderByCreatedAt) {
       query = query.order('created_at', { ascending: options.isAscending });
@@ -48,7 +48,7 @@ export abstract class BaseApi<T extends Partial<iBase>> {
   public insert(payload: Omit<T, keyof iBase>) {
     return this.supabase
       .from(this.tableName)
-      .insert([{ ...payload, created_by: this.authService.currentUser()?.id, active: true }]);
+      .insert({ ...payload, created_by: this.authService.currentUser()?.id, active: true });
   }
 
   public insertMany(payload: Omit<T, keyof iBase>[]) {
@@ -63,7 +63,7 @@ export abstract class BaseApi<T extends Partial<iBase>> {
     payload.updated_by = this.authService.currentUser()?.id;
     payload.updated_at = new Date();
 
-    return this.supabase.from(this.tableName).update([payload]);
+    return this.supabase.from(this.tableName).update([payload]).eq('id', payload.id);
   }
 
   public deleteById(id: string, columnName = 'id') {
@@ -76,5 +76,18 @@ export abstract class BaseApi<T extends Partial<iBase>> {
 
   public inactiveByIds(ids: string[], columnName = 'id') {
     return this.supabase.from(this.tableName).update({ active: false }).in(columnName, ids);
+  }
+
+  public async getUserCompany() {
+    let user_company = JSON.parse(localStorage.getItem('user_company') || '{}');
+
+    if (!user_company.company_id) {
+      const { data } = await this.supabase.from('user_company').select('*').single();
+      if (data) {
+        localStorage.setItem('user_company', JSON.stringify(data));
+        user_company = JSON.parse(localStorage.getItem('user_company') || '{}');
+      }
+    }
+    return user_company;
   }
 }

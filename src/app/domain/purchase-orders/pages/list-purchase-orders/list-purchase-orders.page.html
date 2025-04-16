@@ -22,21 +22,23 @@
     </button>
   </div>
   <nz-divider></nz-divider>
-  <nz-table #basicTable [nzData]="listOfData">
+  <nz-table #basicTable [nzData]="listOfData" [nzLoading]="loadingService.loading()">
     <thead>
       <tr>
         <th>Data do Pedido</th>
         <th>Cliente</th>
         <th>Status</th>
+        <th>Total</th>
         <th>Ações</th>
       </tr>
     </thead>
     <tbody>
       @for (data of basicTable.data; track data) {
         <tr class="table-row">
-          <td>{{ data.datePurchase | date: 'dd/MM/yyyy ' }}</td>
-          <td>{{ data.customerId }}</td>
+          <td>{{ data.order_date | date: 'dd/MM/yyyy ' }}</td>
+          <td>{{ data?.agro_customers?.name }}</td>
           <td>{{ data.status }}</td>
+          <td>{{ data.total_amount | currency: 'BRL' }}</td>
           <td class="actions">
             <nz-icon
               nzType="eye"
@@ -56,7 +58,7 @@
               nzTooltipColor="#178a0c"
               (click)="navigateTo('/purchase-orders/form/' + data.id + '/edit')"
             />
-            <!-- <nz-icon
+            <nz-icon
               nzType="delete"
               nzTheme="outline"
               nzTooltipTitle="Excluir"
@@ -64,7 +66,7 @@
               nz-tooltip
               nzTooltipColor="#178a0c"
               (click)="deleteOrder(data.id)"
-            /> -->
+            />
             <nz-icon
               nzType="file-pdf"
               nzTheme="outline"

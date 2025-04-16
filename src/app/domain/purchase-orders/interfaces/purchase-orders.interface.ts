@@ -3,11 +3,14 @@ import { iProduct } from '../../products/interfaces/products.interface';
 
 export interface iOrder {
   id: string;
-  datePurchase: string;
-  customerId: string;
-  totalPrice: number;
+  order_date: string;
+  customer_id: string;
+  agro_customers?: { name: string };
+  total_amount: number;
   status: iOrderStatus;
-  productsOrdered: iProductOrder[];
+  products_ordered: iProductOrder[];
+  company_id?: string;
+  active: boolean;
 }
 
 export interface iProductOrder extends iProduct {
@@ -17,4 +20,4 @@ export interface iProductOrder extends iProduct {
   totalPrice: number | null;
 }
 
-export type iOrderStatus = 'Criado' | 'Entregue' | 'Pago' | 'Cancelado';
+export type iOrderStatus = 'Criando Pedido' | 'Criado' | 'Entregue' | 'Pago' | 'Cancelado';

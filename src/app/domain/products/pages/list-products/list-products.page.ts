@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
@@ -8,11 +8,12 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { from } from 'rxjs';
 
 import { BaseListComponent } from '../../../../shared/components/base-list.component';
+import { AgroProductsApi } from '../../apis/products.api';
 import { iProduct } from './../../interfaces/products.interface';
 
 @Component({
@@ -34,19 +35,31 @@ import { iProduct } from './../../interfaces/products.interface';
   templateUrl: './list-products.page.html',
   styleUrl: './list-products.page.scss',
 })
-export class ListProductsPage extends BaseListComponent {
+export class ListProductsPage extends BaseListComponent implements OnInit {
   protected readonly search = new FormControl('');
-  private readonly notificationService = inject(NzNotificationService);
+  private readonly productApi = inject(AgroProductsApi);
 
-  protected listOfData: iProduct[] = JSON.parse(localStorage.getItem('products') || '[]');
+  protected listOfData: iProduct[] = [];
 
+  public override ngOnInit(): void {
+    super.ngOnInit();
+    this.loadingService.start();
+    from(this.productApi.getProducts()).subscribe(
+      (customers) => {
+        this.listOfData = customers;
+        this.loadingService.stop();
+      },
+      () => this.loadingService.stop(),
+    );
+  }
   protected deleteProduct(id: string): void {
-    const findIndex = this.listOfData.findIndex((product: iProduct) => product.id == id);
-    this.listOfData.splice(findIndex, 1);
-    localStorage.setItem('products', JSON.stringify(this.listOfData));
-    this.notificationService.success('Produto excluído', 'O produto foi excluído com sucesso', {
-      nzDuration: 100000,
+    from(this.productApi.deleteById(id)).subscribe((response) => {
+      if (response) {
+        this.notificationService.success('Produto excluído', 'O produto foi excluído com sucesso', {
+          nzDuration: 10000,
+        });
+        this.listOfData = this.listOfData.filter((customer) => customer.id !== id);
+      }
     });
-    this.listOfData = JSON.parse(localStorage.getItem('products') || '[]');
   }
 }

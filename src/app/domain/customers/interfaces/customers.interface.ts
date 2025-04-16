@@ -1,8 +1,9 @@
-// eslint-disable-next-line @typescript-eslint/naming-convention
+/* eslint-disable @typescript-eslint/naming-convention */
 export interface iCustomers {
   id: string;
   name: string;
   phone: string;
   email: string;
-  lastOrder: Date;
+  active: boolean;
+  company_id?: string;
 }
