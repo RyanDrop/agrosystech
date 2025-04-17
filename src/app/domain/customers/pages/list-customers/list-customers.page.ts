@@ -54,9 +54,13 @@ export class ListCustomersPage extends BaseListComponent implements OnInit {
   }
   protected deleteCustomer(id: string): void {
     from(this.customersApi.deleteById(id)).subscribe((response) => {
-      if (response) {
+      if (response?.error) {
+        this.notificationService.error('Erro', 'O cliente não pode ser excluído', {
+          nzDuration: 5000,
+        });
+      } else {
         this.notificationService.success('Cliente excluído', 'O cliente foi excluído com sucesso', {
-          nzDuration: 10000,
+          nzDuration: 5000,
         });
         this.listOfData = this.listOfData.filter((customer) => customer.id !== id);
       }

@@ -14,6 +14,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { from } from 'rxjs';
+import { eProductPackage } from 'src/app/domain/products/enums/products.enums';
 
 import { BaseListComponent } from '../../../../shared/components/base-list.component';
 import { AgroPurchaseOrdersApi } from '../../apis/purchase-orders.api';
@@ -123,22 +124,46 @@ export class ListPurchaseOrdersPage extends BaseListComponent implements OnInit 
       },
     });
 
-    const filterProductsOfCx = order.products_ordered.filter((product) => {
-      return product.package === 'CX';
-    });
+    const quantitiesByPackage = order.products_ordered.reduce(
+      (acc: Record<string, number>, product: any) => {
+        const pkg = product.package;
+        const quantity = typeof +product.quantity === 'number' ? +product.quantity : 0;
 
-    const quantityOfCx = filterProductsOfCx.reduce((acc: number, item: any) => {
-      const quantity = typeof +item.quantity === 'number' ? +item.quantity : 0;
-      return acc + quantity;
-    }, 0);
+        if (pkg in acc) {
+          acc[pkg] += quantity;
+        }
+
+        return acc;
+      },
+      {
+        [eProductPackage.CAIXA]: 0,
+        [eProductPackage.CAIXA_PAPELAO]: 0,
+        [eProductPackage.UNIDADE]: 0,
+        [eProductPackage.BANDEIJA]: 0,
+        [eProductPackage.SACO]: 0,
+      },
+    );
+
+    const packages = Object.entries(quantitiesByPackage)
+      .map(([key, value]) => {
+        return value > 0 ? `${value} ${key}` : null;
+      })
+      .filter(Boolean);
 
     autoTable(doc, {
-      head: [['Caixas', 'Total']],
-      body: [[quantityOfCx, `${order.total_amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`]],
+      head: [['Volumes', 'Embalagens', 'Total']],
+      body: [
+        [
+          `${packages.reduce((acc, item) => +acc + +(item?.split(' ')[0] ?? 0), 0)}`,
+          packages.join(' | '),
+          `${order.total_amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`,
+        ],
+      ],
       headStyles: { fillColor: '#82c25e', halign: 'right', fontStyle: 'bold' },
       columnStyles: {
         0: { halign: 'right', fontStyle: 'bold' },
         1: { halign: 'right', fontStyle: 'bold' },
+        2: { halign: 'right', fontStyle: 'bold' },
       },
     });
 

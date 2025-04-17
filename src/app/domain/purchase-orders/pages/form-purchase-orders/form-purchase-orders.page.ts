@@ -174,20 +174,20 @@ export class FormPurchaseOrdersPage extends BaseListComponent {
       this.products = findProducts.sort((a: iProduct, b: iProduct) => a.name.localeCompare(b.name));
 
       this.products.forEach((product: iProduct) => {
+        const findProduct = this.order && this.order()?.products_ordered.find((item: iProductOrder) => item.id === product.id);
+        console.log(findProduct?.name);
         const productGroup = new FormGroup({
           id: new FormControl<string>(product.id, { nonNullable: true }),
           name: new FormControl<string>(product.name, { nonNullable: true }),
-          price: new FormControl<number | null>(null),
-          quantity: new FormControl<number | null>(null),
-          weight: new FormControl<number | null>(null),
-          totalPrice: new FormControl<number | null>(null),
+          price: new FormControl<number | null>(findProduct?.price || null, { nonNullable: true }),
+          quantity: new FormControl<number | null>(findProduct?.quantity || null),
+          weight: new FormControl<number | null>(findProduct?.weight || null),
+          totalPrice: new FormControl<number | null>(findProduct?.totalPrice || null),
           package: new FormControl<string>(product.package, { nonNullable: true }),
           way_counting: new FormControl<string>(product.way_counting, { nonNullable: true }),
         });
         this.productsOrdered.push(productGroup);
       });
-
-      if (this.order) this.productsOrdered.patchValue(this.order()?.products_ordered);
 
       this.table.set(this.productsOrdered.value as iProductOrder[]);
 
@@ -205,12 +205,6 @@ export class FormPurchaseOrdersPage extends BaseListComponent {
           ?.setValue(total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), { emitEvent: false });
       });
 
-      const productsNameAndPackage = this.products.map((product: iProduct) => ({
-        name: product.name,
-        package: product.package,
-      }));
-
-      this.productsOrdered.patchValue(productsNameAndPackage);
       if (this.isConsult()) {
         this.dynamicForm.form.disable();
         this.productsOrdered.disable();

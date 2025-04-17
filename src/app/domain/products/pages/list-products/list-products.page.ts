@@ -54,11 +54,15 @@ export class ListProductsPage extends BaseListComponent implements OnInit {
   }
   protected deleteProduct(id: string): void {
     from(this.productApi.deleteById(id)).subscribe((response) => {
-      if (response) {
-        this.notificationService.success('Produto excluído', 'O produto foi excluído com sucesso', {
-          nzDuration: 10000,
+      if (response?.error) {
+        this.notificationService.error('Erro', 'O produto não pode ser excluído', {
+          nzDuration: 5000,
         });
-        this.listOfData = this.listOfData.filter((customer) => customer.id !== id);
+      } else {
+        this.notificationService.success('Sucesso', 'O produto foi excluído com sucesso', {
+          nzDuration: 5000,
+        });
+        this.listOfData = this.listOfData.filter((product) => product.id !== id);
       }
     });
   }
