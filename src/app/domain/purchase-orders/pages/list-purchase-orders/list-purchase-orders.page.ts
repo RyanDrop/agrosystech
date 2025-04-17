@@ -118,7 +118,11 @@ export class ListPurchaseOrdersPage extends BaseListComponent implements OnInit 
       body: tableData,
       headStyles: { fillColor: '#82c25e', halign: 'left', cellWidth: 'wrap' },
       columnStyles: {
-        ...tableData.map(() => ({ fontSize: 8, halign: 'left' })),
+        0: { cellWidth: 18, fontSize: 8 },
+        1: { cellWidth: 10, fontSize: 8 },
+        2: { fontSize: 8 },
+        3: { fontSize: 8 },
+        4: { fontSize: 8 },
       } as {
         [key: string]: Partial<Styles>;
       },
