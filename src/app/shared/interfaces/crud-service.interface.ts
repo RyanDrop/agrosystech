@@ -9,7 +9,14 @@ export interface Paginate<T> {
 export interface CrudService<T> {
   getAll(columns?: string): Promise<T[]>;
   getDataById(id: string): Promise<T>;
-  getPaginated(pageIndex: number, pageSize: number, columns?: string): Promise<Paginate<T>>;
+  getPaginated(
+    pageIndex: number,
+    pageSize: number,
+    columns?: string,
+    orderBy?: string,
+    orderDirection?: 'asc' | 'desc',
+    search?: { column: string; value: string },
+  ): Promise<Paginate<T>>;
   delete(id: string): PostgrestFilterBuilder<any, any, null, string, unknown>;
   create(payload: T): Promise<T>;
   updateData(id: string, payload: T): Promise<T>;

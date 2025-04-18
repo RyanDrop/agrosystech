@@ -30,8 +30,15 @@ export class AgroProductsApi extends BaseApi<iProduct> implements CrudService<iP
     return data as unknown as iProduct;
   }
 
-  public async getPaginated(pageIndex: number, pageSize: number, columns = 'id, name, package') {
-    return await this.selectPaginate<iProduct>(columns, pageIndex, pageSize);
+  public async getPaginated(
+    pageIndex: number,
+    pageSize: number,
+    columns = 'id, name, package',
+    orderBy?: string,
+    orderDirection?: 'asc' | 'desc',
+    search?: { column: string; value: string },
+  ) {
+    return await this.selectPaginate<iProduct>(columns, pageIndex, pageSize, orderBy, orderDirection, search);
   }
 
   public delete(id: string) {

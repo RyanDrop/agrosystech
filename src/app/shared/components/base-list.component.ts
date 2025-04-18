@@ -2,7 +2,7 @@ import { Component, Inject, inject, OnDestroy, OnInit, signal } from '@angular/c
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { from } from 'rxjs';
+import { debounceTime, from } from 'rxjs';
 
 import { CrudService } from '../interfaces/crud-service.interface';
 import { LoadingService } from '../services/loading/loading.service';
@@ -17,6 +17,7 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
   protected readonly isMobile = signal<boolean>(window.innerWidth < 600);
   protected readonly search = new FormControl('');
 
+  protected columnSearch = 'name';
   protected pageIndex = 1;
   protected pageSize = 5;
   protected pageSizeOptions = [5, 10, 20, 50];
@@ -28,6 +29,9 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
   public ngOnInit() {
     window.addEventListener('resize', this.handleResize);
     this.searchData();
+    this.search.valueChanges.pipe(debounceTime(500)).subscribe(() => {
+      this.searchData(true);
+    });
   }
 
   public ngOnDestroy() {
@@ -50,7 +54,12 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
     this.loadingService.start();
     if (reset) this.pageIndex = 1;
 
-    from(this.crudService.getPaginated(this.pageIndex, this.pageSize)).subscribe(
+    from(
+      this.crudService.getPaginated(this.pageIndex, this.pageSize, undefined, undefined, undefined, {
+        column: this.columnSearch,
+        value: this.search.value || '',
+      }),
+    ).subscribe(
       (response) => {
         this.loadingService.stop();
         this.total = response?.count ?? 0;

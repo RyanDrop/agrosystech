@@ -6,7 +6,7 @@
 <main class="crud">
   <div class="flex">
     <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-      <input type="text" nz-input placeholder="Pesquisar clientes por nome" />
+      <input type="text" nz-input placeholder="Pesquisar clientes por nome" [formControl]="search" />
     </nz-input-group>
     <ng-template #suffixIconButton>
       <button class="agro" nz-button nzType="primary" nzSearch><nz-icon nzType="search" /></button>

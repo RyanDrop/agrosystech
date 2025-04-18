@@ -12,8 +12,15 @@ export class AgroCustomerApi extends BaseApi<iCustomers> implements CrudService<
     super('agro_customers');
   }
 
-  public async getPaginated(pageIndex: number, pageSize: number, columns = 'id, name') {
-    return await this.selectPaginate<iCustomers>(columns, pageIndex, pageSize);
+  public async getPaginated(
+    pageIndex: number,
+    pageSize: number,
+    columns = 'id, name',
+    orderBy?: string,
+    orderDirection?: 'asc' | 'desc',
+    search?: { column: string; value: string },
+  ) {
+    return await this.selectPaginate<iCustomers>(columns, pageIndex, pageSize, orderBy, orderDirection, search);
   }
 
   public async create(customer: iCustomers) {

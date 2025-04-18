@@ -209,3 +209,9 @@ td.actions {
 .ant-pagination-item:hover a {
   color: var(--primary);
 }
+
+.ant-pagination-next:hover .ant-pagination-item-link,
+.ant-pagination-prev:hover .ant-pagination-item-link {
+  border-color: var(--primary);
+  color: var(--primary);
+}

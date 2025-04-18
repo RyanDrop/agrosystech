@@ -38,6 +38,8 @@ import { iOrder } from './../../interfaces/purchase-orders.interface';
   styleUrl: './list-purchase-orders.page.scss',
 })
 export class ListPurchaseOrdersPage extends BaseListComponent<iOrder> implements OnInit {
+  protected override columnSearch = 'status';
+
   constructor() {
     super(inject(AgroPurchaseOrdersApi));
   }

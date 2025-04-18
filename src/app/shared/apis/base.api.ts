@@ -47,12 +47,14 @@ export abstract class BaseApi<T extends Partial<iBase>> {
     pageSize: number,
     columnFromOrderBy = 'name',
     orderBy: 'asc' | 'desc' = 'asc',
+    search?: { column: string; value: string },
   ) {
     const { from, to } = this.getPagination(pageIndex, pageSize);
     const { data, count } = await this.supabase
       .from(this.tableName)
       .select(select, { count: 'exact' })
       .order(columnFromOrderBy, { ascending: orderBy === 'asc' })
+      .like(search?.column || 'name', `%${search?.value || ''}%`)
       .range(from, to);
 
     return {

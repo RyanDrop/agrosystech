@@ -18,8 +18,9 @@ export class AgroPurchaseOrdersApi extends BaseApi<iOrder> implements CrudServic
     columns = '*, agro_customers(name)',
     orderBy = 'order_date',
     orderDirection: 'asc' | 'desc' = 'desc',
+    search?: { column: string; value: string },
   ) {
-    return await this.selectPaginate<iOrder>(columns, pageIndex, pageSize, orderBy, orderDirection);
+    return await this.selectPaginate<iOrder>(columns, pageIndex, pageSize, orderBy, orderDirection, search);
   }
 
   public async create(order: iOrder) {
