@@ -11,12 +11,12 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { AgroCustomerApi } from 'src/app/domain/customers/apis/customers.api';
 import { AgroProductsApi } from 'src/app/domain/products/apis/products.api';
 import { iProduct } from 'src/app/domain/products/interfaces/products.interface';
+import { BaseFormComponent } from 'src/app/shared/components/base-form.component';
 /* eslint-disable @typescript-eslint/naming-convention */
 import { CommonModule } from '@angular/common';
 import { NgxMaskDirective } from 'ngx-mask';
 import { from, map, startWith } from 'rxjs';
 
-import { BaseListComponent } from '../../../../shared/components/base-list.component';
 import { eDynamicField } from '../../../../widgets/components/dynamic-form/dynamic-field.enum';
 import { DynamicFormComponent } from '../../../../widgets/components/dynamic-form/dynamic-form.component';
 import { AgroPurchaseOrdersApi } from '../../apis/purchase-orders.api';
@@ -42,14 +42,18 @@ import { iOrder, iProductOrder } from './../../interfaces/purchase-orders.interf
   templateUrl: './form-purchase-orders.page.html',
   styleUrl: './form-purchase-orders.page.scss',
 })
-export class FormPurchaseOrdersPage extends BaseListComponent {
+export class FormPurchaseOrdersPage extends BaseFormComponent<iOrder> {
   protected order: WritableSignal<iOrder>;
   protected table = signal<iProductOrder[]>([]);
   protected products: iProduct[] = [];
-  private readonly purchaseOrdersApi = inject(AgroPurchaseOrdersApi);
+
   private readonly customersApi = inject(AgroCustomerApi);
   private readonly productApi = inject(AgroProductsApi);
   private readonly totalAmount = new FormControl(0);
+
+  constructor() {
+    super(inject(AgroPurchaseOrdersApi));
+  }
 
   private readonly pedido = `
   1 abóbora nova 
@@ -89,7 +93,7 @@ export class FormPurchaseOrdersPage extends BaseListComponent {
         placeholder: 'Selecione o cliente',
         select: {
           showSearch: true,
-          options$: from(this.customersApi.getCustomers()).pipe(
+          options$: from(this.customersApi.getAll()).pipe(
             map((customers) => {
               return customers.map((customer) => ({ label: customer.name, value: customer.id }));
             }),
@@ -159,7 +163,7 @@ export class FormPurchaseOrdersPage extends BaseListComponent {
     ];
 
     if (!this.isNew() && this.id()) {
-      from(this.purchaseOrdersApi.getOrderById(this.id())).subscribe((order) => {
+      from(this.crudService.getDataById(this.id())).subscribe((order) => {
         this.order = signal(order);
         this.dynamicForm.form.patchValue(order);
         this.getProducts();
@@ -170,12 +174,11 @@ export class FormPurchaseOrdersPage extends BaseListComponent {
   }
 
   private getProducts() {
-    from(this.productApi.getProducts('id, name, package, way_counting')).subscribe((findProducts) => {
+    from(this.productApi.getAll('id, name, package, way_counting')).subscribe((findProducts) => {
       this.products = findProducts.sort((a: iProduct, b: iProduct) => a.name.localeCompare(b.name));
 
       this.products.forEach((product: iProduct) => {
         const findProduct = this.order && this.order()?.products_ordered.find((item: iProductOrder) => item.id === product.id);
-        console.log(findProduct?.name);
         const productGroup = new FormGroup({
           id: new FormControl<string>(product.id, { nonNullable: true }),
           name: new FormControl<string>(product.name, { nonNullable: true }),
@@ -219,7 +222,7 @@ export class FormPurchaseOrdersPage extends BaseListComponent {
       .filter((product) => product.quantity || product.weight) as iProductOrder[];
 
     if (this.isNew()) {
-      const data = await this.purchaseOrdersApi.insertOrder({
+      const data = await this.crudService.create({
         customer_id,
         order_date,
         status: 'Criado',
@@ -233,7 +236,7 @@ export class FormPurchaseOrdersPage extends BaseListComponent {
         this.router.navigate(['/', 'purchase-orders', 'list']);
       }
     } else {
-      const data = await this.purchaseOrdersApi.updateOrder(this.id(), {
+      const data = await this.crudService.updateData(this.id(), {
         customer_id,
         order_date,
         status,

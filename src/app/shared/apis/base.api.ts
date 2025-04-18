@@ -41,6 +41,27 @@ export abstract class BaseApi<T extends Partial<iBase>> {
     return query;
   }
 
+  public async selectPaginate<T>(
+    select = '*',
+    pageIndex: number,
+    pageSize: number,
+    columnFromOrderBy = 'name',
+    orderBy: 'asc' | 'desc' = 'asc',
+  ) {
+    const { from, to } = this.getPagination(pageIndex, pageSize);
+    const { data, count } = await this.supabase
+      .from(this.tableName)
+      .select(select, { count: 'exact' })
+      .order(columnFromOrderBy, { ascending: orderBy === 'asc' })
+      .range(from, to);
+
+    return {
+      data: data as unknown as T[],
+      count: count ?? 0,
+      page: +pageIndex,
+    };
+  }
+
   public insertOrUpdate(payload: T) {
     return payload.id ? this.update(payload).eq('id', payload.id) : this.insert(payload);
   }
@@ -89,5 +110,13 @@ export abstract class BaseApi<T extends Partial<iBase>> {
       }
     }
     return user_company;
+  }
+
+  private getPagination(page: number, size: number) {
+    const limit = size ? size : 10;
+    const from = page ? (page - 1) * limit : 0;
+    const to = page ? from + size - 1 : size - 1;
+
+    return { from, to };
   }
 }

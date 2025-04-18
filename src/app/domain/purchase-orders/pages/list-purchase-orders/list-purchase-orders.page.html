@@ -22,7 +22,20 @@
     </button>
   </div>
   <nz-divider></nz-divider>
-  <nz-table #basicTable [nzData]="listOfData" [nzLoading]="loadingService.loading()">
+  <nz-table
+    #basicTable
+    nzShowSizeChanger
+    [nzData]="listOfData"
+    [nzLoading]="loadingService.loading()"
+    [nzLoadingDelay]="1000"
+    [nzFrontPagination]="false"
+    [nzTotal]="total"
+    [(nzPageIndex)]="pageIndex"
+    [(nzPageSize)]="pageSize"
+    [nzPageSizeOptions]="pageSizeOptions"
+    (nzPageIndexChange)="searchData()"
+    (nzPageSizeChange)="searchData(true)"
+  >
     <thead>
       <tr>
         <th>Data do Pedido</th>
@@ -65,7 +78,7 @@
               nzTooltipPlacement="bottom"
               nz-tooltip
               nzTooltipColor="#178a0c"
-              (click)="deleteOrder(data.id)"
+              (click)="delete(data.id)"
             />
             <nz-icon
               nzType="file-pdf"

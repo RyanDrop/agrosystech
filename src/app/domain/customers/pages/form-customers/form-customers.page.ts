@@ -6,8 +6,8 @@ import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { from } from 'rxjs';
+import { BaseFormComponent } from 'src/app/shared/components/base-form.component';
 
-import { BaseListComponent } from '../../../../shared/components/base-list.component';
 import { eDynamicField } from '../../../../widgets/components/dynamic-form/dynamic-field.enum';
 import { DynamicFormComponent } from '../../../../widgets/components/dynamic-form/dynamic-form.component';
 import { AgroCustomerApi } from '../../apis/customers.api';
@@ -27,9 +27,12 @@ import { iCustomers } from '../../interfaces/customers.interface';
   templateUrl: './form-customers.page.html',
   styleUrl: './form-customers.page.scss',
 })
-export class FormCustomersPage extends BaseListComponent {
+export class FormCustomersPage extends BaseFormComponent<iCustomers> {
   protected customer: WritableSignal<iCustomers>;
-  private readonly customersApi = inject(AgroCustomerApi);
+
+  constructor() {
+    super(inject(AgroCustomerApi));
+  }
 
   public override async getData() {
     this.dynamicFormConfig = [
@@ -76,11 +79,12 @@ export class FormCustomersPage extends BaseListComponent {
         },
         validations: [],
         size: 2,
+        initialValue: true,
       },
     ];
 
     if (!this.isNew() && this.id()) {
-      from(this.customersApi.getCustomerById(this.id())).subscribe((customer) => {
+      from(this.crudService.getDataById(this.id())).subscribe((customer) => {
         this.customer = signal(customer);
         this.dynamicForm.form.patchValue(customer);
         if (this.isConsult()) this.dynamicForm.form.disable();
@@ -90,14 +94,14 @@ export class FormCustomersPage extends BaseListComponent {
 
   protected async submit() {
     if (this.isNew()) {
-      const data = await this.customersApi.insertCustomer(this.dynamicForm.form.getRawValue());
+      const data = await this.crudService.create(this.dynamicForm.form.getRawValue());
       if (data) {
         this.dynamicForm.form.reset();
         this.notificationService.success('Sucesso', 'Cliente cadastrado com sucesso');
         this.router.navigate(['/', 'customers', 'list']);
       }
     } else {
-      const data = await this.customersApi.updateCustomer(this.id(), this.dynamicForm.form.getRawValue());
+      const data = await this.crudService.updateData(this.id(), this.dynamicForm.form.getRawValue());
       if (data) {
         this.dynamicForm.form.reset();
         this.notificationService.success('Sucesso', 'Cliente atualizado com sucesso');

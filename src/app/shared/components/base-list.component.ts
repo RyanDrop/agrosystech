@@ -1,40 +1,33 @@
-import { Component, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, Inject, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { DynamicFormConfig } from 'src/app/widgets/components/dynamic-form/dynamic-form-config.interface';
-import { DynamicFormComponent } from 'src/app/widgets/components/dynamic-form/dynamic-form.component';
+import { from } from 'rxjs';
 
+import { CrudService } from '../interfaces/crud-service.interface';
 import { LoadingService } from '../services/loading/loading.service';
 
 @Component({
   template: '',
 })
-export class BaseListComponent implements OnInit, OnDestroy {
-  protected readonly isMobile = signal<boolean>(window.innerWidth < 768);
-  protected readonly router = inject(Router);
-  protected isConsult = signal(false);
-  protected isNew = signal(false);
-  protected id = signal('');
-  protected loadingService = inject(LoadingService);
+export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
   protected readonly notificationService = inject(NzNotificationService);
+  protected readonly loadingService = inject(LoadingService);
+  protected readonly router = inject(Router);
+  protected readonly isMobile = signal<boolean>(window.innerWidth < 600);
+  protected readonly search = new FormControl('');
 
-  @ViewChild(DynamicFormComponent) public dynamicForm!: DynamicFormComponent;
+  protected pageIndex = 1;
+  protected pageSize = 5;
+  protected pageSizeOptions = [5, 10, 20, 50];
+  protected total: number;
+  protected listOfData: T[] = [];
 
-  protected dynamicFormConfig: DynamicFormConfig[];
+  constructor(@Inject('CrudService') protected readonly crudService: CrudService<T>) {}
 
   public ngOnInit() {
     window.addEventListener('resize', this.handleResize);
-    const isConsult = this.router.url.split('/')[4] === 'consult';
-    const id = this.router.url.split('/')[3] || '';
-    const isNew = this.router.url.split('/')[4] === undefined;
-    this.isConsult.set(isConsult);
-    this.isNew.set(isNew);
-    this.id.set(id);
-    this.getData();
-  }
-
-  public getData() {
-    // getdata
+    this.searchData();
   }
 
   public ngOnDestroy() {
@@ -50,6 +43,36 @@ export class BaseListComponent implements OnInit, OnDestroy {
   }
 
   private readonly handleResize = () => {
-    this.isMobile.set(window.innerWidth < 768);
+    this.isMobile.set(window.innerWidth < 600);
   };
+
+  protected searchData(reset = false): void {
+    this.loadingService.start();
+    if (reset) this.pageIndex = 1;
+
+    from(this.crudService.getPaginated(this.pageIndex, this.pageSize)).subscribe(
+      (response) => {
+        this.loadingService.stop();
+        this.total = response?.count ?? 0;
+        this.listOfData = response?.data as unknown as T[];
+      },
+      () => this.loadingService.loading.set(false),
+    );
+  }
+
+  protected delete(id: string): void {
+    this.loadingService.start();
+    from(this.crudService.delete(id)).subscribe((response) => {
+      if (response?.error) {
+        this.notificationService.error('Erro', 'O registro não pode ser excluído', {
+          nzDuration: 5000,
+        });
+      } else {
+        this.notificationService.success('Sucesso', 'O registro foi excluído com sucesso', {
+          nzDuration: 5000,
+        });
+      }
+      this.searchData();
+    });
+  }
 }

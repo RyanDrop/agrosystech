@@ -6,8 +6,8 @@ import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { from } from 'rxjs';
+import { BaseFormComponent } from 'src/app/shared/components/base-form.component';
 
-import { BaseListComponent } from '../../../../shared/components/base-list.component';
 import { eDynamicField } from '../../../../widgets/components/dynamic-form/dynamic-field.enum';
 import { DynamicFormComponent } from '../../../../widgets/components/dynamic-form/dynamic-form.component';
 import { AgroProductsApi } from '../../apis/products.api';
@@ -27,9 +27,12 @@ import { iProduct } from './../../interfaces/products.interface';
   templateUrl: './form-products.page.html',
   styleUrl: './form-products.page.scss',
 })
-export class FormProductsPage extends BaseListComponent {
+export class FormProductsPage extends BaseFormComponent<iProduct> {
   protected product: WritableSignal<iProduct>;
-  private readonly productApi = inject(AgroProductsApi);
+
+  constructor() {
+    super(inject(AgroProductsApi));
+  }
 
   public override async getData() {
     this.dynamicFormConfig = [
@@ -109,7 +112,7 @@ export class FormProductsPage extends BaseListComponent {
     ];
 
     if (!this.isNew() && this.id()) {
-      from(this.productApi.getProductById(this.id())).subscribe((product) => {
+      from(this.crudService.getDataById(this.id())).subscribe((product) => {
         this.product = signal(product);
         this.dynamicForm.form.patchValue(product);
         if (this.isConsult()) this.dynamicForm.form.disable();
@@ -119,14 +122,14 @@ export class FormProductsPage extends BaseListComponent {
 
   protected async submit() {
     if (this.isNew()) {
-      const data = await this.productApi.insertProduct(this.dynamicForm.form.getRawValue());
+      const data = await this.crudService.create(this.dynamicForm.form.getRawValue());
       if (data) {
         this.dynamicForm.form.reset();
         this.notificationService.success('Sucesso', 'Produto cadastrado com sucesso');
         this.router.navigate(['/', 'products', 'list']);
       }
     } else {
-      const data = await this.productApi.updateProduct(this.id(), this.dynamicForm.form.getRawValue());
+      const data = await this.crudService.updateData(this.id(), this.dynamicForm.form.getRawValue());
       if (data) {
         this.dynamicForm.form.reset();
         this.notificationService.success('Sucesso', 'Produto atualizado com sucesso');

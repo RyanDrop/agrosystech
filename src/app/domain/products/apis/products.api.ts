@@ -1,17 +1,44 @@
 import { Injectable } from '@angular/core';
 import { BaseApi } from 'src/app/shared/apis/base.api';
+import { CrudService } from 'src/app/shared/interfaces/crud-service.interface';
 
 import { iProduct } from '../interfaces/products.interface';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AgroProductsApi extends BaseApi<iProduct> {
+export class AgroProductsApi extends BaseApi<iProduct> implements CrudService<iProduct> {
   constructor() {
     super('agro_products');
   }
 
-  public async insertProduct(product: iProduct) {
+  public async getAll(columns = 'id, name, package') {
+    const { data, error } = await this.select(columns);
+    if (error) {
+      this.notificationService.error('Erro ao buscar produtos', error.message);
+      throw new Error(error.message);
+    }
+    return data as unknown as iProduct[];
+  }
+
+  public async getDataById(id: string) {
+    const { data, error } = await this.getById(id);
+    if (error) {
+      this.notificationService.error('Erro ao buscar produto', error.message);
+      throw new Error(error.message);
+    }
+    return data as unknown as iProduct;
+  }
+
+  public async getPaginated(pageIndex: number, pageSize: number, columns = 'id, name, package') {
+    return await this.selectPaginate<iProduct>(columns, pageIndex, pageSize);
+  }
+
+  public delete(id: string) {
+    return this.deleteById(id, 'id');
+  }
+
+  public async create(product: iProduct) {
     const user_company = await this.getUserCompany();
     const { data, error } = await this.insert({ ...product, company_id: user_company.company_id })
       .select('*')
@@ -23,25 +50,7 @@ export class AgroProductsApi extends BaseApi<iProduct> {
     return data;
   }
 
-  public async getProducts(columns = 'id, name, package') {
-    const { data, error } = await this.select(columns);
-    if (error) {
-      this.notificationService.error('Erro ao buscar produtos', error.message);
-      throw new Error(error.message);
-    }
-    return data as unknown as iProduct[];
-  }
-
-  public async getProductById(id: string) {
-    const { data, error } = await this.getById(id);
-    if (error) {
-      this.notificationService.error('Erro ao buscar produto', error.message);
-      throw new Error(error.message);
-    }
-    return data as unknown as iProduct;
-  }
-
-  public async updateProduct(id: string, product: iProduct) {
+  public async updateData(id: string, product: iProduct) {
     const { data, error } = await this.update({ ...product, id })
       .select('*')
       .single();
@@ -50,9 +59,5 @@ export class AgroProductsApi extends BaseApi<iProduct> {
       throw new Error(error.message);
     }
     return data;
-  }
-
-  public deleteProductById(id: string) {
-    return this.deleteById(id, 'id');
   }
 }
