@@ -1,5 +1,6 @@
 import { Component, Inject, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { DynamicFormConfig } from 'src/app/widgets/components/dynamic-form/dynamic-form-config.interface';
 import { DynamicFormComponent } from 'src/app/widgets/components/dynamic-form/dynamic-form.component';
@@ -14,6 +15,7 @@ export abstract class BaseFormComponent<T> implements OnInit, OnDestroy {
   protected readonly notificationService = inject(NzNotificationService);
   protected readonly loadingService = inject(LoadingService);
   protected readonly router = inject(Router);
+  protected readonly modal = inject(NzModalService);
   protected readonly isMobile = signal<boolean>(window.innerWidth < 600);
   protected readonly isConsult = signal(false);
   protected readonly isNew = signal(false);

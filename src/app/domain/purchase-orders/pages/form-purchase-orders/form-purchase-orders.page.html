@@ -4,6 +4,7 @@
 </header>
 <nz-divider></nz-divider>
 <main class="crud">
+  <button class="import agro" nz-button nzType="primary" (click)="importOrder()"><nz-icon  nzType="import" nzTheme="outline" /></button>
   <div class="form-body">
     <agro-dynamic-form [config]="dynamicFormConfig" />
     <nz-table #basicTable [nzData]="table()" [nzShowPagination]="false" [nzPageSize]="100"> 
@@ -61,7 +62,6 @@
       Editar
     </button>
   } @else {
-      <button class="agro" nz-button nzType="primary" (click)="submit()" [disabled]="dynamicForm.form.invalid">Confirmar</button>
-
+      <button class="agro" nz-button nzType="primary" (click)="submit()" [disabled]="dynamicForm?.form?.invalid">Confirmar</button>
   }
 </footer>

@@ -18,6 +18,7 @@ import {
   EyeOutline,
   FileDoneOutline,
   FilePdfOutline,
+  ImportOutline,
   SearchOutline,
   ShopOutline,
   UserOutline,
@@ -25,6 +26,7 @@ import {
 import { provideTransloco } from '@jsverse/transloco';
 import { provideNzI18n, pt_BR } from 'ng-zorro-antd/i18n';
 import { provideNzIcons } from 'ng-zorro-antd/icon';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { provideEnvironmentNgxMask } from 'ngx-mask';
 import { firstValueFrom } from 'rxjs';
 
@@ -45,6 +47,7 @@ const icons: IconDefinition[] = [
   SearchOutline,
   FilePdfOutline,
   DoubleRightOutline,
+  ImportOutline,
 ];
 
 registerLocaleData(pt);
@@ -63,5 +66,6 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(FormsModule),
     provideAnimationsAsync(),
     provideHttpClient(),
+    NzModalService,
   ],
 }).catch((err) => console.error(err));

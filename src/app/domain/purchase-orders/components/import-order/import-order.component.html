@@ -1,0 +1,4 @@
+<textarea [rows]="10" nz-input [formControl]="importControl" [attr.placeholder]="'Quantidade Pedido'"></textarea>
+<div class="flex justify-end mt-5">
+  <button class="agro" nz-button nzType="primary" (click)="submit()" [disabled]="importControl.invalid">Confirmar</button>
+</div>

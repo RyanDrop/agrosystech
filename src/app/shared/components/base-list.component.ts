@@ -1,6 +1,7 @@
 import { Component, Inject, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { debounceTime, from } from 'rxjs';
 
@@ -14,6 +15,7 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
   protected readonly notificationService = inject(NzNotificationService);
   protected readonly loadingService = inject(LoadingService);
   protected readonly router = inject(Router);
+  protected readonly modal = inject(NzModalService);
   protected readonly isMobile = signal<boolean>(window.innerWidth < 600);
   protected readonly search = new FormControl('');
 
@@ -70,18 +72,26 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
   }
 
   protected delete(id: string): void {
-    this.loadingService.start();
-    from(this.crudService.delete(id)).subscribe((response) => {
-      if (response?.error) {
-        this.notificationService.error('Erro', 'O registro não pode ser excluído', {
-          nzDuration: 5000,
+    this.modal.confirm({
+      nzTitle: 'Atenção',
+      nzContent: 'Deseja excluir o registro?',
+      nzOkText: 'Sim',
+      nzOkType: 'primary',
+      nzOnOk: () => {
+        this.loadingService.start();
+        from(this.crudService.delete(id)).subscribe((response) => {
+          if (response?.error) {
+            this.notificationService.error('Erro', 'O registro não pode ser excluído', {
+              nzDuration: 5000,
+            });
+          } else {
+            this.notificationService.success('Sucesso', 'O registro foi excluído com sucesso', {
+              nzDuration: 5000,
+            });
+          }
+          this.searchData();
         });
-      } else {
-        this.notificationService.success('Sucesso', 'O registro foi excluído com sucesso', {
-          nzDuration: 5000,
-        });
-      }
-      this.searchData();
+      },
     });
   }
 }

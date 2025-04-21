@@ -45,6 +45,15 @@ export class ListPurchaseOrdersPage extends BaseListComponent<iOrder> implements
   }
 
   protected generatePDF(order: iOrder): void {
-    generatePDF(order);
+    this.modal.confirm({
+      nzTitle: 'Atenção',
+      nzContent: 'Deseja gerar o PDF do pedido?',
+      nzOkText: 'Sim',
+      nzOkType: 'primary',
+
+      nzOnOk: () => {
+        generatePDF(order);
+      },
+    });
   }
 }

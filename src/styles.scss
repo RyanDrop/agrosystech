@@ -26,6 +26,7 @@ header.crud {
 }
 
 main.crud {
+  position: relative;
 }
 
 a {
@@ -33,6 +34,10 @@ a {
   &:hover {
     color: var(--secondary);
   }
+}
+
+p {
+  margin-bottom: 0;
 }
 
 .ant-steps-item-finish .ant-steps-item-icon,
@@ -162,6 +167,46 @@ button.agro:not(:disabled, .ant-btn-dangerous) {
     }
   }
 }
+.ant-modal-confirm-title {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.ant-modal-confirm-content {
+  & > * {
+    font-size: 16px;
+  }
+  text-align: center;
+  margin-left: 0 !important;
+}
+.ant-modal-body {
+  padding: 25px !important;
+}
+
+.ant-modal-confirm-btns {
+  button:first-child {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+    color: white;
+
+    &:hover {
+      border-color: var(--secondary);
+      background-color: var(--red);
+      color: var(--white-01);
+    }
+  }
+  button:last-child {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+
+    &:hover {
+      border-color: var(--primary);
+      background-color: var(--green);
+      color: var(--white-01);
+    }
+  }
+}
 
 nz-select .ant-select-dropdown {
   z-index: 9999;
@@ -214,4 +259,39 @@ td.actions {
 .ant-pagination-prev:hover .ant-pagination-item-link {
   border-color: var(--primary);
   color: var(--primary);
+}
+
+.ant-table-pagination {
+  overflow-y: auto;
+  height: 33px;
+
+  @media (max-width: 768px) {
+    height: 45px;
+  }
+}
+
+.ant-table-pagination-right {
+  justify-content: flex-start !important;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--white-01);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--primary);
+  transition: background-color 3s;
+  border-radius: 5px;
+  &:hover {
+    background-color: var(--green);
+  }
+}
+
+div.red {
+  color: var(--secondary);
 }

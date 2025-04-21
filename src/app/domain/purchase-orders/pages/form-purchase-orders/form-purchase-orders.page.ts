@@ -5,6 +5,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -20,6 +21,7 @@ import { from, map, startWith } from 'rxjs';
 import { eDynamicField } from '../../../../widgets/components/dynamic-form/dynamic-field.enum';
 import { DynamicFormComponent } from '../../../../widgets/components/dynamic-form/dynamic-form.component';
 import { AgroPurchaseOrdersApi } from '../../apis/purchase-orders.api';
+import { ImportOrderComponent } from '../../components/import-order/import-order.component';
 import { iOrder, iProductOrder } from './../../interfaces/purchase-orders.interface';
 
 @Component({
@@ -38,6 +40,7 @@ import { iOrder, iProductOrder } from './../../interfaces/purchase-orders.interf
     NzSelectModule,
     NzDropDownModule,
     FormsModule,
+    NzIconModule,
   ],
   templateUrl: './form-purchase-orders.page.html',
   styleUrl: './form-purchase-orders.page.scss',
@@ -250,5 +253,71 @@ export class FormPurchaseOrdersPage extends BaseFormComponent<iOrder> {
         this.router.navigate(['/', 'purchase-orders', 'list']);
       }
     }
+  }
+
+  protected importOrder() {
+    const modal = this.modal.create({
+      nzTitle: 'Importar Pedido',
+      nzContent: ImportOrderComponent,
+      nzFooter: null,
+      nzOnOk: () => new Promise((resolve) => resolve),
+    });
+
+    modal.afterClose.subscribe((data) => {
+      if (data) {
+        const lines = data.split('\n');
+        const items = lines
+          .map((line: string) => line.trim())
+          .filter((line: string | any[]) => line.length > 0)
+          .map((line: string) => {
+            const match = line.match(/^(\d+)\s+(.+)$/);
+            if (!match) {
+              this.notificationService.error('Erro ao importar pedido', 'Formato inválido na linha: ' + line);
+              throw new Error(`Formato inválido na linha: "${line}"`);
+            }
+            const quantity = parseInt(match[1], 10);
+            let name = match[2].toLowerCase();
+            name = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+            return { quantity, name };
+          });
+
+        const insertProduct = items
+          .map((item: any) => {
+            const product = this.products.find((p: iProduct) =>
+              p.name
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .includes(item.name),
+            );
+            if (product) {
+              const index = this.productsOrdered.value.findIndex((p) => p.id === product.id);
+              this.productsOrdered.controls[index].get('quantity')?.setValue(item.quantity);
+            }
+
+            return product
+              ? null
+              : {
+                  name: item.name,
+                  quantity: item.quantity,
+                };
+          })
+          .filter(Boolean);
+
+        if (insertProduct.length > 0) {
+          this.modal.confirm({
+            nzTitle: 'Importar Pedido',
+            nzContent: `
+          <p>Os seguintes itens não foram encontrados:</p>
+          <div class="red">
+          ${insertProduct.map((item: any) => `<p [style]="'color:red'">* ${item.quantity} ${item.name}</p>`).join('')}</div>`,
+            nzFooter: null,
+            nzCancelDisabled: true,
+            nzCancelText: null,
+          });
+        } else this.notificationService.success('Sucesso', 'Pedido importado com sucesso');
+      }
+    });
   }
 }
