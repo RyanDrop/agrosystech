@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { AuthService } from './../../domain/auth/services/auth.service';
 import { injectSupabase } from './../functions/inject-supabase.function';
-import { iBase } from './../interfaces/base.interface';
+import { iBase, ManagerFilter } from './../interfaces/base.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -61,6 +61,69 @@ export abstract class BaseApi<T extends Partial<iBase>> {
       data: data as unknown as T[],
       count: count ?? 0,
       page: +pageIndex,
+    };
+  }
+
+  public async selectPaginateManager(
+    select = '*',
+    pageIndex: number,
+    pageSize: number,
+    columnFromOrderBy = 'name',
+    orderBy: 'asc' | 'desc' = 'asc',
+    filters?: ManagerFilter[],
+  ) {
+    const { from, to } = this.getPagination(pageIndex, pageSize);
+
+    let query = this.supabase.from(this.tableName).select(select, { count: 'exact' });
+
+    if (filters && filters.length) {
+      filters.forEach(({ column, operator = 'eq', value }) => {
+        switch (operator) {
+          case 'in':
+            if (Array.isArray(value)) {
+              query = query.in(column, value as (string | number)[]);
+            } else {
+              throw new Error(`Para 'in', passe um array em value.`);
+            }
+            break;
+
+          case 'gte':
+            query = query.gte(column, value as string | number);
+            break;
+
+          case 'lte':
+            query = query.lte(column, value as string | number);
+            break;
+
+          case 'gt':
+            query = query.gt(column, value as string | number);
+            break;
+
+          case 'lt':
+            query = query.lt(column, value as string | number);
+            break;
+
+          case 'neq':
+            query = query.neq(column, value as string | number);
+            break;
+
+          case 'eq':
+          default:
+            query = query.eq(column, value as string | number);
+            break;
+        }
+      });
+    }
+    const { data, count, error } = await query.order(columnFromOrderBy, { ascending: orderBy === 'asc' }).range(from, to);
+
+    if (error) {
+      throw error;
+    }
+
+    return {
+      data: data ?? ([] as unknown as T[]),
+      count: count ?? 0,
+      page: pageIndex,
     };
   }
 

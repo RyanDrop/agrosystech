@@ -21,6 +21,7 @@ import {
   ImportOutline,
   SearchOutline,
   ShopOutline,
+  SolutionOutline,
   UserOutline,
 } from '@ant-design/icons-angular/icons';
 import { provideTransloco } from '@jsverse/transloco';
@@ -48,6 +49,7 @@ const icons: IconDefinition[] = [
   FilePdfOutline,
   DoubleRightOutline,
   ImportOutline,
+  SolutionOutline,
 ];
 
 registerLocaleData(pt);

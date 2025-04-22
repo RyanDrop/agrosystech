@@ -1,0 +1,76 @@
+<!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
+<header class="crud">
+  <h1>Gerenciador de Pedidos</h1>
+  <span>Gerencie seus pedidos, ações de criação, edição e exclusão.</span>
+</header>
+<nz-divider></nz-divider>
+<main class="form-body">
+  <button class="import agro" nz-button nzType="primary" (click)="exportPdf()">
+    <nz-icon nzType="file-pdf" nzTheme="outline" />
+  </button>
+  <nz-layout>
+    <nz-sider>
+      <div class="filters">
+        <p class="text-lg">Filtros:</p>
+        <nz-select
+          [formControl]="clientesControl"
+          [nzAllowClear]="true"
+          [nzShowSearch]="true"
+          [nzShowArrow]="true"
+          [nzPlaceHolder]="'Selecione os clientes'"
+          [nzMaxTagCount]="10"
+          (nzScrollToBottom)="loadMore()"
+          [nzDropdownRender]="renderTemplate"
+          nzMode="multiple"
+        >
+          @for (item of optionList; track item) {
+            <nz-option [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
+          }
+        </nz-select>
+        <nz-select
+          [formControl]="statusControl"
+          [nzAllowClear]="true"
+          [nzShowSearch]="true"
+          [nzShowArrow]="true"
+          [nzPlaceHolder]="'Selecione os status'"
+          nzMode="multiple"
+        >
+          @for (item of orderStatus; track item) {
+            <nz-option [nzValue]="item.value" [nzLabel]="item.value"></nz-option>
+          }
+        </nz-select>
+        <nz-range-picker [formControl]="dateRange" [nzFormat]="'dd/MM/yyyy'"></nz-range-picker>
+        <button nz-button nzType="primary" class="w-full agro" (click)="filter()">Filtrar</button>
+        <ng-template #renderTemplate>
+          @if (isLoading) {
+            <nz-spin></nz-spin>
+          }
+        </ng-template>
+      </div>
+    </nz-sider>
+    <nz-content>
+      <nz-table #basicTable nzShowSizeChanger [nzData]="listOfData">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Data do Pedido</th>
+            <th>Cliente</th>
+            <th>Status</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (data of basicTable.data; track data) {
+            <tr class="table-row">
+              <td><label nz-checkbox (change)="selectItem(data)"></label></td>
+              <td>{{ data.order_date | date: 'dd/MM/yyyy ' }}</td>
+              <td>{{ data?.agro_customers?.name }}</td>
+              <td>{{ data.status }}</td>
+              <td>{{ data.total_amount | currency: 'BRL' }}</td>
+            </tr>
+          }
+        </tbody>
+      </nz-table>
+    </nz-content>
+  </nz-layout>
+</main>

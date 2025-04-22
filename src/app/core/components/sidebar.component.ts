@@ -46,6 +46,11 @@ export class SidebarComponent {
       href: '/purchase-orders',
       icon: 'file-done',
     },
+    {
+      title: 'Gerenciar Pedidos',
+      href: '/manager-purchase-orders',
+      icon: 'solution',
+    },
   ];
 
   protected navigateTo(item: SidebarItem) {

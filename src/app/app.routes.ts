@@ -54,6 +54,12 @@ export const APP_ROUTES: Route[] = [
         title: 'Pedidos',
         loadChildren: () => import('./domain/purchase-orders/purchase-orders.routes').then((m) => m.PURCHASE_ORDERS_ROUTES),
       },
+      {
+        path: 'manager-purchase-orders',
+        title: 'Gerenciador de Pedidos',
+        loadChildren: () =>
+          import('./domain/manager-purchase-orders/manager-purchase-orders.routes').then((m) => m.MANAGER_PURCHASE_ORDERS_ROUTES),
+      },
     ],
   },
 ];

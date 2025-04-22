@@ -22,6 +22,7 @@ import { eDynamicField } from '../../../../widgets/components/dynamic-form/dynam
 import { DynamicFormComponent } from '../../../../widgets/components/dynamic-form/dynamic-form.component';
 import { AgroPurchaseOrdersApi } from '../../apis/purchase-orders.api';
 import { ImportOrderComponent } from '../../components/import-order/import-order.component';
+import { ORDER_STATUS } from '../../constants/purchase-orders.constants';
 import { iOrder, iProductOrder } from './../../interfaces/purchase-orders.interface';
 
 @Component({
@@ -57,17 +58,6 @@ export class FormPurchaseOrdersPage extends BaseFormComponent<iOrder> {
   constructor() {
     super(inject(AgroPurchaseOrdersApi));
   }
-
-  private readonly pedido = `
-  1 abóbora nova 
-  2 batatas doce 
-  2 inhames
-  1 pepino japonês 
-  1 pimentão colorido 
-  1 goiaba 
-  1 manga
-  2 maracujás
-  `;
 
   public productsOrdered = new FormArray<
     FormGroup<{
@@ -123,28 +113,7 @@ export class FormPurchaseOrdersPage extends BaseFormComponent<iOrder> {
         },
         select: {
           showSearch: true,
-          options: [
-            {
-              label: 'Criando Pedido',
-              value: 'Criando Pedido',
-            },
-            {
-              label: 'Criado',
-              value: 'Criado',
-            },
-            {
-              label: 'Entregue',
-              value: 'Entregue',
-            },
-            {
-              label: 'Pago',
-              value: 'Pago',
-            },
-            {
-              label: 'Cancelado',
-              value: 'Cancelado',
-            },
-          ],
+          options: ORDER_STATUS,
         },
         validations: [Validators.required],
         size: 6,
