@@ -304,6 +304,10 @@ div.red {
   color: var(--primary);
 }
 
+.apexcharts-toolbar {
+  display: none !important;
+}
+
 @keyframes fadeIn {
   0% {
     opacity: 0;

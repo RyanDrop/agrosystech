@@ -1,7 +1,7 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { ChartComponent, NgApexchartsModule } from 'ng-apexcharts';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
@@ -15,13 +15,15 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
-import { catchError, from, of } from 'rxjs';
 import { AgroCustomerApi } from 'src/app/domain/customers/apis/customers.api';
 import { ORDER_STATUS } from 'src/app/domain/purchase-orders/constants/purchase-orders.constants';
 import { BaseManagerComponent } from 'src/app/shared/components/base-manager.component';
 import { convertDateRangeToISO } from 'src/app/shared/functions/convert-date-range-to-iso.function';
 import { manyOrderPdf } from 'src/app/shared/functions/order-pdf.function';
 import { ManagerFilter } from 'src/app/shared/interfaces/base.interface';
+/* eslint-disable @typescript-eslint/naming-convention */
+import { CommonModule } from '@angular/common';
+import { catchError, from, of } from 'rxjs';
 
 import { AgroManagerPurchaseOrdersApi } from '../../apis/manager-purchase-orders.api';
 import { iOrder } from '../../interfaces/purchase-orders.interface';
@@ -45,6 +47,7 @@ import { iOrder } from '../../interfaces/purchase-orders.interface';
     NzSpinModule,
     NzDatePickerModule,
     NzLayoutModule,
+    NgApexchartsModule, // Ensure this module is installed and imported correctly
     NzCheckboxModule,
   ],
   templateUrl: './manager-purchase-orders.page.html',
@@ -62,6 +65,10 @@ export class ManagerPurchaseOrdersPage extends BaseManagerComponent<iOrder> {
   protected pageCustomer = 10;
   protected totalCustomer = 100;
   protected readonly orderStatus = ORDER_STATUS;
+  @ViewChild('chart') protected chart: ChartComponent;
+  protected topProductsOptions: any;
+  protected salesByCustomerOptions: any;
+  protected salesEvolutionOptions: any;
 
   constructor() {
     super();
@@ -118,6 +125,9 @@ export class ManagerPurchaseOrdersPage extends BaseManagerComponent<iOrder> {
         this.listOfData = response.data;
         this.total = response.count;
         this.loadingService.stop();
+        this.prepareTopProductsChart();
+        this.prepareSalesEvolutionChart();
+        this.prepareSalesByCustomerChart();
       },
       () => this.loadingService.stop(),
     );
@@ -126,5 +136,188 @@ export class ManagerPurchaseOrdersPage extends BaseManagerComponent<iOrder> {
   protected exportPdf() {
     if (this.selection.selected.length === 0) return;
     manyOrderPdf(this.selection.selected);
+  }
+
+  private prepareTopProductsChart() {
+    // 1. Agrega quantidade por produto
+    const qtyByProduct = new Map<string, number>();
+    this.listOfData.forEach((order) =>
+      order.products_ordered.forEach((prod) => {
+        const q = prod.quantity || 0;
+        qtyByProduct.set(prod.name, (qtyByProduct.get(prod.name) || 0) + +q);
+      }),
+    );
+
+    // 2. Ordena e pega top 5
+    const sorted = Array.from(qtyByProduct.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+
+    const categories = sorted.map((item) => item[0]);
+    const data = sorted.map((item) => item[1]);
+
+    // 3. Monta opções do gráfico de barras
+    this.topProductsOptions = {
+      series: [
+        {
+          name: 'Qtd Vendida',
+          data,
+        },
+      ],
+      chart: {
+        type: 'bar',
+        height: 350,
+      },
+      colors: ['#82c25e', '#e0342a', '#178', '#da0', '#ad1'],
+      title: {
+        text: 'Top 5 Produtos Mais Vendidos',
+      },
+      subtitle: {
+        text: 'Quantidade total baseada no filtro',
+      },
+      xaxis: {
+        categories,
+      },
+      yaxis: {
+        title: { text: 'Quantidade' },
+      },
+      dataLabels: {
+        enabled: true,
+        style: {
+          colors: ['#000000'],
+        },
+      },
+      legend: {
+        position: 'top',
+      },
+      stroke: {
+        width: 1,
+      },
+      labels: categories,
+      plotOptions: {
+        bar: {
+          distributed: true, // cada barra com cor diferente
+        },
+      },
+    };
+  }
+
+  private prepareSalesEvolutionChart() {
+    // 1. Agrupa valor total por dia (formato dd/MM)
+    const salesByDay = new Map<string, number>();
+    this.listOfData.forEach(({ order_date, total_amount }) => {
+      const d = new Date(order_date);
+      const dayKey = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+      salesByDay.set(dayKey, (salesByDay.get(dayKey) || 0) + total_amount);
+    });
+
+    // 2. Ordena por data
+    const sorted = Array.from(salesByDay.entries()).sort((a, b) => {
+      const [da, ma] = a[0].split('/').map((n) => +n);
+      const [db, mb] = b[0].split('/').map((n) => +n);
+      return ma - mb || da - db;
+    });
+
+    const categories = sorted.map((item) => item[0]);
+    const data = sorted.map((item) => item[1]);
+
+    // 3. Monta opções do gráfico de linha
+    this.salesEvolutionOptions = {
+      series: [
+        {
+          name: 'R$ Vendas',
+          data,
+        },
+      ],
+      chart: {
+        type: 'line',
+        height: 350,
+      },
+      title: {
+        text: 'Evolução Diário de Vendas',
+      },
+      subtitle: {
+        text: 'Total faturado por dia',
+      },
+      xaxis: {
+        categories,
+      },
+      yaxis: {
+        title: { text: 'Valor (R$)' },
+      },
+      stroke: {
+        curve: 'smooth',
+        width: 2,
+      },
+      dataLabels: {
+        enabled: false,
+        style: {
+          colors: ['#000000'],
+        },
+      },
+      labels: categories,
+      legend: {
+        position: 'top',
+      },
+      colors: ['#82c25e'], // cor da linha
+    };
+  }
+
+  private prepareSalesByCustomerChart() {
+    // 1) Agrega total de vendas por cliente
+    const salesByCust = new Map<string, number>();
+    this.listOfData.forEach((order) => {
+      const custName = order['agro_customers']?.name || 'Desconhecido';
+      salesByCust.set(custName, (salesByCust.get(custName) || 0) + order.total_amount);
+    });
+
+    // 2) Ordena decrescente e pega top 5 (ou comente slice pra mostrar todos)
+    const sorted = Array.from(salesByCust.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+
+    const categories = sorted.map((item) => item[0]);
+    const data = sorted.map((item) => item[1]);
+
+    // 3) Configurações do gráfico de barras por cliente
+    this.salesByCustomerOptions = {
+      series: [
+        {
+          name: 'R$ Vendido',
+          data,
+        },
+      ],
+      chart: {
+        type: 'bar',
+        height: 350,
+      },
+      title: {
+        text: 'Top 5 Clientes por Valor Vendido',
+      },
+      subtitle: {
+        text: 'Total faturado',
+      },
+      xaxis: {
+        categories,
+        title: { text: 'Cliente' },
+      },
+      yaxis: {
+        title: { text: 'Valor (R$)' },
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: (val: { toLocaleString: (arg0: string, arg1: { style: string; currency: string }) => any }) =>
+          val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
+        style: {
+          colors: ['#000000'],
+        },
+      },
+      colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0'],
+      plotOptions: {
+        bar: {
+          distributed: true, // cada barra com cor diferente
+        },
+      },
+    };
   }
 }

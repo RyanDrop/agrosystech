@@ -16,6 +16,7 @@ export abstract class BaseManagerComponent<T> implements OnInit, OnDestroy {
   protected readonly modal = inject(NzModalService);
   protected readonly isMobile = signal<boolean>(window.innerWidth < 600);
   protected readonly showFilters = signal(true);
+  protected readonly showCharts = signal(false);
 
   protected pageIndex = 1;
   protected pageSize = 5;
@@ -33,7 +34,7 @@ export abstract class BaseManagerComponent<T> implements OnInit, OnDestroy {
   }
 
   protected navigateTo(route: string) {
-    this.router.navigate([route]);
+    window.open(route, '_blank');
   }
 
   private readonly handleResize = () => {

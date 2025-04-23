@@ -16,7 +16,28 @@
     >
       <nz-icon nzType="filter" nzTheme="outline" />
     </button>
-
+    <button
+      class="agro"
+      nz-tooltip
+      [nzTooltipTitle]="showCharts() ? 'Recolher Gráficos' : 'Mostrar Gráficos'"
+      nz-button
+      nzType="primary"
+      (click)="showCharts.set(!showCharts())"
+      [disabled]="listOfData.length === 0"
+    >
+      <nz-icon nzType="bar-chart" nzTheme="outline" />
+    </button>
+    <button
+      class="agro"
+      nz-tooltip
+      nzTooltipTitle="Consultar Pedido"
+      nz-button
+      nzType="primary"
+      (click)="navigateTo('purchase-orders/form/' + selection.selected[0].id + '/consult')"
+      [disabled]="selection.selected.length !== 1"
+    >
+      <nz-icon nzType="eye" nzTheme="outline" />
+    </button>
     <button
       class="agro"
       nz-tooltip
@@ -30,92 +51,134 @@
     </button>
   </header>
   <nz-divider></nz-divider>
-
-  <nz-layout>
-    @if (showFilters()) {
-      <nz-sider>
-        <div class="filters">
-          <p class="text-lg">Filtros:</p>
-          <nz-select
-            [formControl]="clientesControl"
-            [nzAllowClear]="true"
-            [nzShowSearch]="true"
-            [nzShowArrow]="true"
-            [nzPlaceHolder]="'Selecione os clientes'"
-            [nzMaxTagCount]="10"
-            (nzScrollToBottom)="loadMore()"
-            [nzDropdownRender]="renderTemplate"
-            nzMode="multiple"
-          >
-            @for (item of optionList; track item) {
-              <nz-option [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
-            }
-          </nz-select>
-          <nz-select
-            [formControl]="statusControl"
-            [nzAllowClear]="true"
-            [nzShowSearch]="true"
-            [nzShowArrow]="true"
-            [nzPlaceHolder]="'Selecione os status'"
-            nzMode="multiple"
-          >
-            @for (item of orderStatus; track item) {
-              <nz-option [nzValue]="item.value" [nzLabel]="item.value"></nz-option>
-            }
-          </nz-select>
-          <nz-range-picker [formControl]="dateRange" [nzFormat]="'dd/MM/yyyy'"></nz-range-picker>
-          <button nz-button nzType="primary" class="w-full agro" (click)="filter()">Filtrar</button>
-          <ng-template #renderTemplate>
-            @if (loadingService.loading()) {
-              <nz-spin></nz-spin>
-            }
-          </ng-template>
-        </div>
-      </nz-sider>
-    }
-    <nz-content>
-      <nz-table
-        #basicTable
-        nzShowSizeChanger
-        [nzData]="listOfData"
-        [nzLoading]="loadingService.loading()"
-        [nzLoadingDelay]="1000"
-        [nzTotal]="total"
-        [nzFrontPagination]="false"
-        [(nzPageIndex)]="pageIndex"
-        [(nzPageSize)]="pageSize"
-        [nzPageSizeOptions]="pageSizeOptions"
-        (nzPageIndexChange)="filter()"
-        (nzPageSizeChange)="filter()"
-      >
-        <thead>
-          <tr>
-            <th>
-              <label
-                nz-checkbox
-                (change)="selectAll($event)"
-                [nzDisabled]="listOfData.length === 0"
-                [nzIndeterminate]="selection.selected.length > 0 && selection.selected.length < listOfData.length"
-              ></label>
-            </th>
-            <th>Data do Pedido</th>
-            <th>Cliente</th>
-            <th>Status</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (data of basicTable.data; track data) {
-            <tr class="table-row">
-              <td><label nz-checkbox (change)="selectItem(data)" [ngModel]="selection.isSelected(data)"></label></td>
-              <td>{{ data.order_date | date: 'dd/MM/yyyy ' }}</td>
-              <td>{{ data?.agro_customers?.name }}</td>
-              <td>{{ data.status }}</td>
-              <td>{{ data.total_amount | currency: 'BRL' }}</td>
+  @if (!showCharts()) {
+    <nz-layout>
+      @if (showFilters()) {
+        <nz-sider>
+          <div class="filters">
+            <p class="text-lg">Filtros:</p>
+            <nz-select
+              [formControl]="clientesControl"
+              [nzAllowClear]="true"
+              [nzShowSearch]="true"
+              [nzShowArrow]="true"
+              [nzPlaceHolder]="'Selecione os clientes'"
+              [nzMaxTagCount]="10"
+              (nzScrollToBottom)="loadMore()"
+              [nzDropdownRender]="renderTemplate"
+              nzMode="multiple"
+            >
+              @for (item of optionList; track item) {
+                <nz-option [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
+              }
+            </nz-select>
+            <nz-select
+              [formControl]="statusControl"
+              [nzAllowClear]="true"
+              [nzShowSearch]="true"
+              [nzShowArrow]="true"
+              [nzPlaceHolder]="'Selecione os status'"
+              nzMode="multiple"
+            >
+              @for (item of orderStatus; track item) {
+                <nz-option [nzValue]="item.value" [nzLabel]="item.value"></nz-option>
+              }
+            </nz-select>
+            <nz-range-picker [formControl]="dateRange" [nzFormat]="'dd/MM/yyyy'"></nz-range-picker>
+            <button nz-button nzType="primary" class="w-full agro" (click)="filter()">Filtrar</button>
+            <ng-template #renderTemplate>
+              @if (loadingService.loading()) {
+                <nz-spin></nz-spin>
+              }
+            </ng-template>
+          </div>
+        </nz-sider>
+      }
+      <nz-content>
+        <nz-table
+          #basicTable
+          nzShowSizeChanger
+          [nzData]="listOfData"
+          [nzLoading]="loadingService.loading()"
+          [nzLoadingDelay]="1000"
+          [nzTotal]="total"
+          [nzFrontPagination]="false"
+          [(nzPageIndex)]="pageIndex"
+          [(nzPageSize)]="pageSize"
+          [nzPageSizeOptions]="pageSizeOptions"
+          (nzPageIndexChange)="filter()"
+          (nzPageSizeChange)="filter()"
+        >
+          <thead>
+            <tr>
+              <th>
+                <label
+                  nz-checkbox
+                  (change)="selectAll($event)"
+                  [nzDisabled]="listOfData.length === 0"
+                  [nzIndeterminate]="selection.selected.length > 0 && selection.selected.length < listOfData.length"
+                ></label>
+              </th>
+              <th>Data do Pedido</th>
+              <th>Cliente</th>
+              <th>Status</th>
+              <th>Total</th>
             </tr>
-          }
-        </tbody>
-      </nz-table>
-    </nz-content>
-  </nz-layout>
+          </thead>
+          <tbody>
+            @for (data of basicTable.data; track data) {
+              <tr class="table-row">
+                <td><label nz-checkbox (change)="selectItem(data)" [ngModel]="selection.isSelected(data)"></label></td>
+                <td>{{ data.order_date | date: 'dd/MM/yyyy ' }}</td>
+                <td>{{ data?.agro_customers?.name }}</td>
+                <td>{{ data.status }}</td>
+                <td>{{ data.total_amount | currency: 'BRL' }}</td>
+              </tr>
+            }
+          </tbody>
+        </nz-table>
+      </nz-content>
+    </nz-layout>
+  }
+
+  @if (showCharts()) {
+    <div class="charts-container">
+      <apx-chart
+        [series]="salesByCustomerOptions.series"
+        [chart]="salesByCustomerOptions.chart"
+        [xaxis]="salesByCustomerOptions.xaxis"
+        [dataLabels]="salesByCustomerOptions.dataLabels"
+        [yaxis]="salesByCustomerOptions.yaxis"
+        [title]="salesByCustomerOptions.title"
+        [subtitle]="salesByCustomerOptions.subtitle"
+        [colors]="salesByCustomerOptions.colors"
+        [plotOptions]="salesByCustomerOptions.plotOptions"
+      ></apx-chart>
+      <nz-divider></nz-divider>
+      <apx-chart
+        [series]="topProductsOptions.series"
+        [chart]="topProductsOptions.chart"
+        [xaxis]="topProductsOptions.xaxis"
+        [dataLabels]="topProductsOptions.dataLabels"
+        [yaxis]="topProductsOptions.yaxis"
+        [title]="topProductsOptions.title"
+        [subtitle]="topProductsOptions.subtitle"
+        [legend]="topProductsOptions.legend"
+        [colors]="topProductsOptions.colors"
+        [plotOptions]="salesByCustomerOptions.plotOptions"
+      ></apx-chart>
+      <nz-divider></nz-divider>
+      <apx-chart
+        [series]="salesEvolutionOptions.series"
+        [chart]="salesEvolutionOptions.chart"
+        [xaxis]="salesEvolutionOptions.xaxis"
+        [stroke]="salesEvolutionOptions.stroke"
+        [dataLabels]="salesEvolutionOptions.dataLabels"
+        [yaxis]="salesEvolutionOptions.yaxis"
+        [title]="salesEvolutionOptions.title"
+        [subtitle]="salesEvolutionOptions.subtitle"
+        [colors]="salesEvolutionOptions.colors"
+      ></apx-chart>
+    </div>
+  }
 </main>

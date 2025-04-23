@@ -11,6 +11,7 @@ import { IconDefinition } from '@ant-design/icons-angular';
 import {
   ArrowLeftOutline,
   ArrowRightOutline,
+  BarChartOutline,
   DeleteFill,
   DoubleLeftOutline,
   DoubleRightOutline,
@@ -54,6 +55,7 @@ const icons: IconDefinition[] = [
   SolutionOutline,
   DoubleLeftOutline,
   FilterOutline,
+  BarChartOutline,
 ];
 
 registerLocaleData(pt);
