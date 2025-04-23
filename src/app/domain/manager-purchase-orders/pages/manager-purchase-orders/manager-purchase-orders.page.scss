@@ -31,40 +31,56 @@
 
   main {
     position: relative;
-  }
-
-  nz-layout {
-    background: transparent;
-    margin-top: 20px;
-    nz-sider {
-      background: transparent;
-      padding: 10px;
-      width: 270px !important;
-      min-width: 270px !important;
-      flex: 0 0 270px !important;
-      border-radius: 8px;
-      margin-right: 20px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      .filters {
-        :nth-child(n + 1):not(:last-child) {
-          margin-bottom: 10px;
-        }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      button {
+        margin-right: 10px;
       }
     }
 
-    nz-content {
-      max-width: 1400px;
-      margin: 0 auto;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      padding: 10px;
-      border-radius: 8px;
-    }
-  }
+    nz-layout {
+      background: transparent;
+      margin-top: 20px;
+      @media (max-width: 700px) {
+        flex-direction: column;
+      }
+      nz-sider {
+        background: transparent;
+        padding: 10px;
+        width: 255px !important;
+        max-width: 255px !important;
+        flex: 0 0 255px !important;
+        border-radius: 8px;
+        margin-right: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 0.4s;
 
-  .import {
-    position: absolute;
-    right: 0;
-    top: 0;
-    border-top-right-radius: 8px;
+        .filters {
+          overflow-y: auto;
+          :nth-child(n + 1):not(:last-child) {
+            margin-bottom: 10px;
+          }
+        }
+
+        @media (max-width: 700px) {
+          width: 100% !important;
+          max-width: 100% !important;
+          flex: 0 0 100% !important;
+          margin-bottom: 20px;
+          margin-right: 0;
+        }
+      }
+
+      nz-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        border-radius: 8px;
+        width: 100%;
+        overflow: auto;
+      }
+    }
   }
 }

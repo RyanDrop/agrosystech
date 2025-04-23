@@ -20,6 +20,6 @@ export class AgroManagerPurchaseOrdersApi extends BaseApi<iOrder> {
     orderDirection: 'asc' | 'desc' = 'desc',
     filters?: ManagerFilter[],
   ) {
-    return await this.selectPaginateManager(columns, pageIndex, pageSize, orderBy, orderDirection, filters);
+    return await this.selectPaginateManager<iOrder>(columns, pageIndex, pageSize, orderBy, orderDirection, filters);
   }
 }

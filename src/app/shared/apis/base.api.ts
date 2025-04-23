@@ -64,7 +64,7 @@ export abstract class BaseApi<T extends Partial<iBase>> {
     };
   }
 
-  public async selectPaginateManager(
+  public async selectPaginateManager<T>(
     select = '*',
     pageIndex: number,
     pageSize: number,
@@ -121,7 +121,7 @@ export abstract class BaseApi<T extends Partial<iBase>> {
     }
 
     return {
-      data: data ?? ([] as unknown as T[]),
+      data: data as unknown as T[],
       count: count ?? 0,
       page: pageIndex,
     };

@@ -248,6 +248,10 @@ td.actions {
   border-color: var(--primary);
 }
 
+.ant-checkbox-indeterminate .ant-checkbox-inner::after {
+  background-color: var(--primary);
+}
+
 .ant-pagination-item:hover {
   border-color: var(--primary);
 }
@@ -298,4 +302,16 @@ div.red {
 
 .ant-select-item-option-selected:not(.ant-select-item-option-disabled) .ant-select-item-option-state {
   color: var(--primary);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

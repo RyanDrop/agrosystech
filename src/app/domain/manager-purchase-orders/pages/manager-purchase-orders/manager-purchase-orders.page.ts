@@ -1,9 +1,7 @@
-import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
@@ -12,6 +10,7 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -19,6 +18,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { catchError, from, of } from 'rxjs';
 import { AgroCustomerApi } from 'src/app/domain/customers/apis/customers.api';
 import { ORDER_STATUS } from 'src/app/domain/purchase-orders/constants/purchase-orders.constants';
+import { BaseManagerComponent } from 'src/app/shared/components/base-manager.component';
 import { convertDateRangeToISO } from 'src/app/shared/functions/convert-date-range-to-iso.function';
 import { manyOrderPdf } from 'src/app/shared/functions/order-pdf.function';
 import { ManagerFilter } from 'src/app/shared/interfaces/base.interface';
@@ -40,7 +40,7 @@ import { iOrder } from '../../interfaces/purchase-orders.interface';
     RouterModule,
     ReactiveFormsModule,
     NzButtonModule,
-    NzAlertModule,
+    NzPaginationModule,
     NzSelectModule,
     NzSpinModule,
     NzDatePickerModule,
@@ -50,25 +50,21 @@ import { iOrder } from '../../interfaces/purchase-orders.interface';
   templateUrl: './manager-purchase-orders.page.html',
   styleUrl: './manager-purchase-orders.page.scss',
 })
-export class ManagerPurchaseOrdersPage {
-  protected isLoading = false;
+export class ManagerPurchaseOrdersPage extends BaseManagerComponent<iOrder> {
   protected readonly clientesControl = new FormControl<string[]>([]);
   protected readonly statusControl = new FormControl<string[]>([]);
   protected readonly dateRange = new FormControl<string[]>([]);
   private readonly managerPurchaseOrdersApi = inject(AgroManagerPurchaseOrdersApi);
-  protected listOfData: any[] = [];
   private readonly customersApi = inject(AgroCustomerApi);
 
   protected optionList: { name: string; id: string }[] = [];
   protected indexCustomer = 1;
   protected pageCustomer = 10;
   protected totalCustomer = 100;
-
-  protected selection = new SelectionModel<iOrder>(true, []);
-
   protected readonly orderStatus = ORDER_STATUS;
 
   constructor() {
+    super();
     this.loadMore();
   }
 
@@ -80,9 +76,9 @@ export class ManagerPurchaseOrdersPage {
 
   protected loadMore() {
     if (this.indexCustomer === 0) return;
-    this.isLoading = true;
+    this.loadingService.start();
     this.getRandomNameList().subscribe((response) => {
-      this.isLoading = false;
+      this.loadingService.stop();
       const data = response.data;
       this.totalCustomer = response.count;
       this.optionList = [...this.optionList, ...data];
@@ -92,6 +88,7 @@ export class ManagerPurchaseOrdersPage {
 
   protected filter() {
     this.selection.clear();
+    this.loadingService.start();
     const filters = [];
     const dateRange = this.dateRange.value;
     const clientes = this.clientesControl.value;
@@ -109,21 +106,21 @@ export class ManagerPurchaseOrdersPage {
 
     from(
       this.managerPurchaseOrdersApi.getPaginateManager(
-        0,
-        10,
+        this.pageIndex,
+        this.pageSize,
         '*, agro_customers(name)',
         'order_date',
         'desc',
         filters as ManagerFilter[],
       ),
-    ).subscribe((response) => {
-      this.listOfData = response.data;
-    });
-  }
-
-  protected selectItem(item: iOrder) {
-    if (this.selection.isSelected(item)) this.selection.deselect(item);
-    else this.selection.select(item);
+    ).subscribe(
+      (response) => {
+        this.listOfData = response.data;
+        this.total = response.count;
+        this.loadingService.stop();
+      },
+      () => this.loadingService.stop(),
+    );
   }
 
   protected exportPdf() {

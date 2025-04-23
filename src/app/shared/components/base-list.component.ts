@@ -65,9 +65,9 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
       (response) => {
         this.loadingService.stop();
         this.total = response?.count ?? 0;
-        this.listOfData = response?.data as unknown as T[];
+        this.listOfData = response?.data;
       },
-      () => this.loadingService.loading.set(false),
+      () => this.loadingService.stop(),
     );
   }
 

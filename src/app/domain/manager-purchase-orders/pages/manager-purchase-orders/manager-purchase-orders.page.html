@@ -5,54 +5,99 @@
 </header>
 <nz-divider></nz-divider>
 <main class="form-body">
-  <button class="import agro" nz-button nzType="primary" (click)="exportPdf()">
-    <nz-icon nzType="file-pdf" nzTheme="outline" />
-  </button>
+  <header>
+    <button
+      class="agro"
+      nz-button
+      nzType="primary"
+      nz-tooltip
+      [nzTooltipTitle]="showFilters() ? 'Recolher Filtros' : 'Mostar Filtros'"
+      (click)="showFilters.set(!showFilters())"
+    >
+      <nz-icon nzType="filter" nzTheme="outline" />
+    </button>
+
+    <button
+      class="agro"
+      nz-tooltip
+      nzTooltipTitle="Exportar PDF"
+      nz-button
+      nzType="primary"
+      (click)="exportPdf()"
+      [disabled]="selection.selected.length === 0"
+    >
+      <nz-icon nzType="file-pdf" nzTheme="outline" />
+    </button>
+  </header>
+  <nz-divider></nz-divider>
+
   <nz-layout>
-    <nz-sider>
-      <div class="filters">
-        <p class="text-lg">Filtros:</p>
-        <nz-select
-          [formControl]="clientesControl"
-          [nzAllowClear]="true"
-          [nzShowSearch]="true"
-          [nzShowArrow]="true"
-          [nzPlaceHolder]="'Selecione os clientes'"
-          [nzMaxTagCount]="10"
-          (nzScrollToBottom)="loadMore()"
-          [nzDropdownRender]="renderTemplate"
-          nzMode="multiple"
-        >
-          @for (item of optionList; track item) {
-            <nz-option [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
-          }
-        </nz-select>
-        <nz-select
-          [formControl]="statusControl"
-          [nzAllowClear]="true"
-          [nzShowSearch]="true"
-          [nzShowArrow]="true"
-          [nzPlaceHolder]="'Selecione os status'"
-          nzMode="multiple"
-        >
-          @for (item of orderStatus; track item) {
-            <nz-option [nzValue]="item.value" [nzLabel]="item.value"></nz-option>
-          }
-        </nz-select>
-        <nz-range-picker [formControl]="dateRange" [nzFormat]="'dd/MM/yyyy'"></nz-range-picker>
-        <button nz-button nzType="primary" class="w-full agro" (click)="filter()">Filtrar</button>
-        <ng-template #renderTemplate>
-          @if (isLoading) {
-            <nz-spin></nz-spin>
-          }
-        </ng-template>
-      </div>
-    </nz-sider>
+    @if (showFilters()) {
+      <nz-sider>
+        <div class="filters">
+          <p class="text-lg">Filtros:</p>
+          <nz-select
+            [formControl]="clientesControl"
+            [nzAllowClear]="true"
+            [nzShowSearch]="true"
+            [nzShowArrow]="true"
+            [nzPlaceHolder]="'Selecione os clientes'"
+            [nzMaxTagCount]="10"
+            (nzScrollToBottom)="loadMore()"
+            [nzDropdownRender]="renderTemplate"
+            nzMode="multiple"
+          >
+            @for (item of optionList; track item) {
+              <nz-option [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
+            }
+          </nz-select>
+          <nz-select
+            [formControl]="statusControl"
+            [nzAllowClear]="true"
+            [nzShowSearch]="true"
+            [nzShowArrow]="true"
+            [nzPlaceHolder]="'Selecione os status'"
+            nzMode="multiple"
+          >
+            @for (item of orderStatus; track item) {
+              <nz-option [nzValue]="item.value" [nzLabel]="item.value"></nz-option>
+            }
+          </nz-select>
+          <nz-range-picker [formControl]="dateRange" [nzFormat]="'dd/MM/yyyy'"></nz-range-picker>
+          <button nz-button nzType="primary" class="w-full agro" (click)="filter()">Filtrar</button>
+          <ng-template #renderTemplate>
+            @if (loadingService.loading()) {
+              <nz-spin></nz-spin>
+            }
+          </ng-template>
+        </div>
+      </nz-sider>
+    }
     <nz-content>
-      <nz-table #basicTable nzShowSizeChanger [nzData]="listOfData">
+      <nz-table
+        #basicTable
+        nzShowSizeChanger
+        [nzData]="listOfData"
+        [nzLoading]="loadingService.loading()"
+        [nzLoadingDelay]="1000"
+        [nzTotal]="total"
+        [nzFrontPagination]="false"
+        [(nzPageIndex)]="pageIndex"
+        [(nzPageSize)]="pageSize"
+        [nzPageSizeOptions]="pageSizeOptions"
+        (nzPageIndexChange)="filter()"
+        (nzPageSizeChange)="filter()"
+      >
         <thead>
           <tr>
-            <th></th>
+            <th>
+              <label
+                nz-checkbox
+                (change)="selectAll($event)"
+                [nzDisabled]="listOfData.length === 0"
+                [nzIndeterminate]="selection.selected.length > 0 && selection.selected.length < listOfData.length"
+              ></label>
+            </th>
             <th>Data do Pedido</th>
             <th>Cliente</th>
             <th>Status</th>
@@ -62,7 +107,7 @@
         <tbody>
           @for (data of basicTable.data; track data) {
             <tr class="table-row">
-              <td><label nz-checkbox (change)="selectItem(data)"></label></td>
+              <td><label nz-checkbox (change)="selectItem(data)" [ngModel]="selection.isSelected(data)"></label></td>
               <td>{{ data.order_date | date: 'dd/MM/yyyy ' }}</td>
               <td>{{ data?.agro_customers?.name }}</td>
               <td>{{ data.status }}</td>

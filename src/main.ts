@@ -12,12 +12,14 @@ import {
   ArrowLeftOutline,
   ArrowRightOutline,
   DeleteFill,
+  DoubleLeftOutline,
   DoubleRightOutline,
   EditOutline,
   EyeInvisibleOutline,
   EyeOutline,
   FileDoneOutline,
   FilePdfOutline,
+  FilterOutline,
   ImportOutline,
   SearchOutline,
   ShopOutline,
@@ -50,6 +52,8 @@ const icons: IconDefinition[] = [
   DoubleRightOutline,
   ImportOutline,
   SolutionOutline,
+  DoubleLeftOutline,
+  FilterOutline,
 ];
 
 registerLocaleData(pt);
