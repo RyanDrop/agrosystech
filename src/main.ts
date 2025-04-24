@@ -22,6 +22,7 @@ import {
   FilePdfOutline,
   FilterOutline,
   ImportOutline,
+  LogoutOutline,
   SearchOutline,
   ShopOutline,
   SolutionOutline,
@@ -56,6 +57,7 @@ const icons: IconDefinition[] = [
   DoubleLeftOutline,
   FilterOutline,
   BarChartOutline,
+  LogoutOutline,
 ];
 
 registerLocaleData(pt);

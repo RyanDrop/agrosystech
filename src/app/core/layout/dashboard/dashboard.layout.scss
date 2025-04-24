@@ -1,6 +1,22 @@
 :host {
   nz-layout {
     background: #c2d9c1;
+    nav {
+      padding: 8px 20px;
+      padding: 8px 20px;
+      display: flex;
+      justify-content: flex-end;
+
+      i {
+        color: var(--green);
+        font-size: 20px;
+        transition: color 0.3s;
+        cursor: pointer;
+        &:hover {
+          color: var(--white-01);
+        }
+      }
+    }
   }
   nz-sider {
     background: var(--primary);
@@ -23,7 +39,7 @@
 
   nz-content {
     min-height: 100vh;
-    padding: 20px;
+    padding: 0px 20px 20px 20px;
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
