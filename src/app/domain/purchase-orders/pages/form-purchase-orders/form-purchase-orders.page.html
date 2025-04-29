@@ -23,12 +23,12 @@
             <td class="min-w-100">
               @if(data.way_counting === "Q"){
                 <nz-input-group>
-                  <input type="text" nz-input [formControl]="formGroup.quantity" mask="0*" max="999999" placeholder="Digite a quantidade" />
+                  <input type="number" nz-input [formControl]="formGroup.quantity"  max="999999" placeholder="Digite a quantidade" />
                 </nz-input-group>
               } @else {
                 <div class="group-counting">
                   <nz-input-group class="mr-2">
-                   <input type="text" nz-input [formControl]="formGroup.quantity" mask="0*" max="999999" placeholder="Digite a quantidade" />
+                   <input type="number" nz-input [formControl]="formGroup.quantity" max="999999" placeholder="Digite a quantidade" />
                   </nz-input-group>
                   <nz-input-group>
                     <input type="text" nz-input [formControl]="formGroup.weight"  mask="separator.3" max="999999"placeholder="Digite o peso" suffix=" kg" />
