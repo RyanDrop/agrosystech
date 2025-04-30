@@ -68,6 +68,10 @@ export class FormProductsPage extends BaseFormComponent<iProduct> {
               value: 'CXP',
             },
             {
+              label: 'CXM',
+              value: 'CXM',
+            },
+            {
               label: 'UN',
               value: 'UN',
             },
