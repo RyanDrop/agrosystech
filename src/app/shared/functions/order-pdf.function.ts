@@ -77,6 +77,7 @@ export function generatePDF(order: iOrder): void {
     {
       [eProductPackage.CAIXA]: 0,
       [eProductPackage.CAIXA_PAPELAO]: 0,
+      [eProductPackage.CAIXA_MADEIRA]: 0,
       [eProductPackage.UNIDADE]: 0,
       [eProductPackage.BANDEIJA]: 0,
       [eProductPackage.SACO]: 0,
@@ -183,6 +184,7 @@ export function manyOrderPdf(orders: iOrder[]) {
       },
       {
         [eProductPackage.CAIXA]: 0,
+        [eProductPackage.CAIXA_MADEIRA]: 0,
         [eProductPackage.CAIXA_PAPELAO]: 0,
         [eProductPackage.UNIDADE]: 0,
         [eProductPackage.BANDEIJA]: 0,
