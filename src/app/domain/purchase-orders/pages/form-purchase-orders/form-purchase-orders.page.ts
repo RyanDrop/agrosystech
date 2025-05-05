@@ -9,8 +9,10 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { AgroCustomerApi } from 'src/app/domain/customers/apis/customers.api';
 import { AgroProductsApi } from 'src/app/domain/products/apis/products.api';
+import { eProductPackage } from 'src/app/domain/products/enums/products.enums';
 import { iProduct } from 'src/app/domain/products/interfaces/products.interface';
 import { BaseFormComponent } from 'src/app/shared/components/base-form.component';
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -22,6 +24,7 @@ import { eDynamicField } from '../../../../widgets/components/dynamic-form/dynam
 import { DynamicFormComponent } from '../../../../widgets/components/dynamic-form/dynamic-form.component';
 import { AgroPurchaseOrdersApi } from '../../apis/purchase-orders.api';
 import { ImportOrderComponent } from '../../components/import-order/import-order.component';
+import { ShareOrderComponent } from '../../components/share-order/share-order.component';
 import { ORDER_STATUS } from '../../constants/purchase-orders.constants';
 import { iOrder, iProductOrder } from './../../interfaces/purchase-orders.interface';
 
@@ -42,6 +45,7 @@ import { iOrder, iProductOrder } from './../../interfaces/purchase-orders.interf
     NzDropDownModule,
     FormsModule,
     NzIconModule,
+    NzToolTipModule,
   ],
   templateUrl: './form-purchase-orders.page.html',
   styleUrl: './form-purchase-orders.page.scss',
@@ -54,6 +58,7 @@ export class FormPurchaseOrdersPage extends BaseFormComponent<iOrder> {
   private readonly customersApi = inject(AgroCustomerApi);
   private readonly productApi = inject(AgroProductsApi);
   private readonly totalAmount = new FormControl(0);
+  protected quantityPerPackageValue: string;
 
   constructor() {
     super(inject(AgroPurchaseOrdersApi));
@@ -178,6 +183,8 @@ export class FormPurchaseOrdersPage extends BaseFormComponent<iOrder> {
         this.dynamicForm.form
           .get('total_screen')
           ?.setValue(total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), { emitEvent: false });
+
+        this.quantityPerPackageValue = this.calcQuantityPerPackage();
       });
 
       if (this.isConsult()) {
@@ -288,5 +295,67 @@ export class FormPurchaseOrdersPage extends BaseFormComponent<iOrder> {
         } else this.notificationService.success('Sucesso', 'Pedido importado com sucesso');
       }
     });
+  }
+
+  protected shareOrder() {
+    this.modal
+      .confirm({
+        nzTitle: 'Compartilhar Pedido',
+        nzContent: `
+      <p>Qualquer pessoa com o link terá acesso ao pedido e poderá edita-lo uma vez, deseja continuar?</p>`,
+        nzCancelText: 'Cancelar',
+        nzOkText: 'Sim',
+        nzOnOk: () => {
+          return { confirm: true };
+        },
+      })
+      .afterClose.subscribe((data) => {
+        const builder = this.crudService.patchProductOrderNoAuth?.(this.id());
+        if (data?.confirm && builder) {
+          from(builder).subscribe((response) => {
+            if (response) {
+              this.notificationService.success('Sucesso', 'Pedido compartilhado com sucesso');
+              this.modal.create({
+                nzTitle: 'Pedido Compartilhado',
+                nzContent: ShareOrderComponent,
+                nzFooter: null,
+              });
+            }
+          });
+        } else {
+          this.notificationService.error('Erro', 'Erro ao compartilhar pedido');
+        }
+      });
+  }
+
+  protected calcQuantityPerPackage() {
+    const quantitiesByPackage = this.productsOrdered.value.reduce(
+      (acc: Record<string, number>, product: any) => {
+        const pkg = product.package;
+        const quantity = typeof +product.quantity === 'number' ? +product.quantity : 0;
+
+        if (pkg in acc) {
+          acc[pkg] += quantity;
+        }
+
+        return acc;
+      },
+      {
+        [eProductPackage.CAIXA]: 0,
+        [eProductPackage.CAIXA_MADEIRA]: 0,
+        [eProductPackage.CAIXA_PAPELAO]: 0,
+        [eProductPackage.UNIDADE]: 0,
+        [eProductPackage.BANDEIJA]: 0,
+        [eProductPackage.SACO]: 0,
+      },
+    );
+
+    return `${quantitiesByPackage[eProductPackage.CAIXA]} ${eProductPackage.CAIXA} - ${
+      quantitiesByPackage[eProductPackage.CAIXA_PAPELAO]
+    } ${eProductPackage.CAIXA_PAPELAO} - ${quantitiesByPackage[eProductPackage.CAIXA_MADEIRA]} ${
+      eProductPackage.CAIXA_MADEIRA
+    } - ${quantitiesByPackage[eProductPackage.UNIDADE]} ${eProductPackage.UNIDADE} - ${
+      quantitiesByPackage[eProductPackage.BANDEIJA]
+    } ${eProductPackage.BANDEIJA} - ${quantitiesByPackage[eProductPackage.SACO]} ${eProductPackage.SACO}`;
   }
 }

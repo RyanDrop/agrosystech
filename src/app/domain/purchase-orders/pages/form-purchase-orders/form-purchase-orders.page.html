@@ -4,8 +4,16 @@
 </header>
 <nz-divider></nz-divider>
 <main class="crud">
-  <button class="import agro" nz-button nzType="primary" (click)="importOrder()"><nz-icon  nzType="import" nzTheme="outline" /></button>
   <div class="form-body">
+    <header>
+      <button class="agro" nz-button nzType="primary" (click)="importOrder()">
+        <nz-icon nzType="import" nzTheme="outline" nzTooltipTitle="Importar Pedido" nzTooltipPlacement="top" nz-tooltip  />
+      </button>
+      <button class="agro" nz-button nzType="primary" (click)="shareOrder()">
+        <nz-icon nzType="share-alt" nzTheme="outline" nzTooltipTitle="Compartilhar Pedido" nzTooltipPlacement="top" nz-tooltip  />
+      </button>
+    </header>
+    <nz-divider class="margin-10"></nz-divider>
     <agro-dynamic-form [config]="dynamicFormConfig" />
     <nz-table #basicTable [nzData]="table()" [nzShowPagination]="false" [nzPageSize]="100"> 
       <thead>
@@ -52,6 +60,7 @@
         }
       </tbody>
     </nz-table>
+    <p class="mt-4 text-right">{{quantityPerPackageValue}}</p>
   </div>
 </main>
 <nz-divider></nz-divider>
@@ -62,6 +71,6 @@
       Editar
     </button>
   } @else {
-      <button class="agro" nz-button nzType="primary" (click)="submit()" [disabled]="dynamicForm?.form?.invalid">Confirmar</button>
+    <button class="agro" nz-button nzType="primary" (click)="submit()" [disabled]="dynamicForm?.form?.invalid">Confirmar</button>
   }
 </footer>

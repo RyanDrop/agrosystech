@@ -20,4 +20,5 @@ export interface CrudService<T> {
   delete(id: string): PostgrestFilterBuilder<any, any, null, string, unknown>;
   create(payload: T): Promise<T>;
   updateData(id: string, payload: T): Promise<T>;
+  patchProductOrderNoAuth?(id: string): PostgrestFilterBuilder<any, any, null, 'agro_purchase_orders', unknown> | null;
 }

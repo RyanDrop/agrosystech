@@ -4,11 +4,18 @@
     max-width: 200px;
   }
 
-  .import {
-    position: absolute;
-    right: 0;
-    border-top-right-radius: 8px;
-  }
+   header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      button {
+        margin-left: 10px;
+      }
+    }
+
+    .margin-10{
+      margin: 10px 0;
+    }
 
   .group-counting {
     display: flex;

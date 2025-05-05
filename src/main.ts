@@ -12,6 +12,7 @@ import {
   ArrowLeftOutline,
   ArrowRightOutline,
   BarChartOutline,
+  CopyOutline,
   DeleteFill,
   DoubleLeftOutline,
   DoubleRightOutline,
@@ -24,6 +25,7 @@ import {
   ImportOutline,
   LogoutOutline,
   SearchOutline,
+  ShareAltOutline,
   ShopOutline,
   SolutionOutline,
   UserOutline,
@@ -58,6 +60,8 @@ const icons: IconDefinition[] = [
   FilterOutline,
   BarChartOutline,
   LogoutOutline,
+  ShareAltOutline,
+  CopyOutline,
 ];
 
 registerLocaleData(pt);
