@@ -12,6 +12,10 @@ export const ORDER_STATUS = [
     value: 'Entregue',
   },
   {
+    label: 'Pago Pendente Vale',
+    value: 'Pago Pendente Vale',
+  },
+  {
     label: 'Pago',
     value: 'Pago',
   },

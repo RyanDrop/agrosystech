@@ -21,4 +21,4 @@ export interface iProductOrder extends iProduct {
   totalPrice: number | null;
 }
 
-export type iOrderStatus = 'Criando Pedido' | 'Criado' | 'Entregue' | 'Pago' | 'Cancelado';
+export type iOrderStatus = 'Criando Pedido' | 'Criado' | 'Entregue' | 'Pago Pendente Vale' | 'Pago' | 'Cancelado';
