@@ -20,7 +20,7 @@ export abstract class BaseApi<T extends Partial<iBase>> {
   constructor(protected tableName: string) {}
 
   public getById(id: string) {
-    return this.supabase.from(this.tableName).select('*').eq('id', id).single();
+    return this.supabase.from(this.tableName).select('*, agro_customers(name)').eq('id', id).single();
   }
 
   public select(

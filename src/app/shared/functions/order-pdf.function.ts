@@ -15,7 +15,7 @@ export function generatePDF(order: iOrder): void {
 
   autoTable(doc, {
     head: [[`Pedido #${order.id}`]],
-    body: [[`${order.agro_customers?.name} - ${new Date(order.order_date).toLocaleDateString('pt-BR')}`]],
+    body: [[`${order.agro_customers?.name || ''} - ${new Date(order.order_date).toLocaleDateString('pt-BR')}`]],
     headStyles: { fillColor: '#82c25e', fontStyle: 'bold', halign: 'left' },
     columnStyles: { 0: { fontStyle: 'bold', halign: 'left' } },
     startY: imageY,
@@ -107,7 +107,7 @@ export function generatePDF(order: iOrder): void {
     },
   });
 
-  doc.save(`Pedido:${order.agro_customers?.name} - Data: ${new Date(order.order_date).toLocaleDateString('pt-BR')}.pdf`);
+  doc.save(`Pedido:${order.agro_customers?.name || ''} - Data: ${new Date(order.order_date).toLocaleDateString('pt-BR')}.pdf`);
 }
 
 export function manyOrderPdf(orders: iOrder[]) {

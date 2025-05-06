@@ -1,0 +1,25 @@
+:host {
+  nz-layout {
+    background: #c2d9c1;
+    header {
+      height: 50px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      img {
+        height: 60px;
+      }
+    }
+  }
+
+  nz-content {
+    min-height: calc(100vh - 70px);
+    padding: 0px 20px 20px 20px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    background: #c2d9c1;
+  }
+}

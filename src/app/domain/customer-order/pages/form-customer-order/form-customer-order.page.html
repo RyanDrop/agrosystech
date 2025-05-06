@@ -1,0 +1,53 @@
+<header>
+  <h1>Formulário de Pedidos</h1>
+  @if(!!order){
+    <span>{{ order()?.order_date | date: 'dd/MM/yyyy'}}</span>
+  }
+</header>
+<nz-divider></nz-divider>
+<main class="crud">
+  <div class="form-body">
+    <nz-table #basicTable [nzData]="table()" [nzShowPagination]="false" [nzPageSize]="100"> 
+      <thead>
+        <tr>
+          <th>Quantidade</th>
+          <th class="w-0">Em.</th>
+          <th>Produto</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (data of basicTable.data; track data; let index = $index) {
+          <tr class="table-row">
+            <td class="min-w-100">
+              @if(data.way_counting === "Q"){
+                <nz-input-group>
+                  <input type="number" nz-input [formControl]="formGroup.quantity"  max="999999" placeholder="Digite a quantidade" />
+                </nz-input-group>
+              } @else {
+                <div class="group-counting">
+                  <nz-input-group class="mr-2">
+                   <input type="number" nz-input [formControl]="formGroup.quantity" max="999999" placeholder="Digite a quantidade" />
+                  </nz-input-group>
+                  <nz-input-group>
+                    <input type="text" nz-input [formControl]="formGroup.weight"  mask="separator.3" max="999999"placeholder="Digite o peso" suffix=" kg" />
+                  </nz-input-group>
+              </div>
+              }
+            
+            </td>
+            @let formGroup = productsOrdered.controls[index].controls;
+            <td>{{ data.package }}</td>
+            <td>{{ data.name }}</td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+    <p class="mt-4 text-right">{{quantityPerPackageValue}}</p>
+  </div>
+</main>
+<nz-divider></nz-divider>
+<footer class="crud">
+
+    <button class="agro" nz-button nzType="primary" (click)="submit()">Confirmar</button>
+  
+</footer>

@@ -62,6 +62,7 @@ export class FormPurchaseOrdersPage extends BaseFormComponent<iOrder> {
 
   constructor() {
     super(inject(AgroPurchaseOrdersApi));
+    console.log();
   }
 
   public productsOrdered = new FormArray<
@@ -310,15 +311,30 @@ export class FormPurchaseOrdersPage extends BaseFormComponent<iOrder> {
         },
       })
       .afterClose.subscribe((data) => {
-        const builder = this.crudService.patchProductOrderNoAuth?.(this.id());
+        const order = this.order();
+        order.products_ordered = this.productsOrdered.value.map((product) => ({
+          id: product.id || '',
+          name: product.name || '',
+          price: product.price ?? null,
+          quantity: product.quantity ?? null,
+          weight: product.weight ?? null,
+          totalPrice: product.totalPrice ?? null,
+          package: product.package || '',
+          way_counting: product.way_counting || '',
+        })) as iProductOrder[];
+        order.products_ordered_no_auth = true;
+        delete order.agro_customers;
+
+        const builder = this.crudService.updateData(this.id(), order);
         if (data?.confirm && builder) {
           from(builder).subscribe((response) => {
             if (response) {
-              this.notificationService.success('Sucesso', 'Pedido compartilhado com sucesso');
+              this.notificationService.success('Sucesso', 'Pedido compartilhado com sucesso', { nzDuration: 2000 });
               this.modal.create({
                 nzTitle: 'Pedido Compartilhado',
                 nzContent: ShareOrderComponent,
                 nzFooter: null,
+                nzData: { id: order.id },
               });
             }
           });

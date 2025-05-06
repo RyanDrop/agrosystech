@@ -10,6 +10,16 @@ export const APP_ROUTES: Route[] = [
     canActivate: [isLoggedInGuard],
   },
   {
+    path: 'customer-order',
+    loadComponent: () => import('./core/layout/customer-order/customer-order.layout').then((m) => m.CustomerOrderLayout),
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('./domain/customer-order/customer-order.routes').then((m) => m.CUSTOMER_ORDER_ROUTES),
+      },
+    ],
+  },
+  {
     path: 'auth',
     loadComponent: () => import('./core/layout/auth/auth.layout').then((m) => m.AuthLayout),
     canActivate: [isLoggedInGuard],

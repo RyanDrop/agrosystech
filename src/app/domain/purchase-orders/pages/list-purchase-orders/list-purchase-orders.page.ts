@@ -53,6 +53,7 @@ export class ListPurchaseOrdersPage extends BaseListComponent<iOrder> implements
 
       nzOnOk: () => {
         generatePDF(order);
+        this.notificationService.success('Sucesso', 'PDF gerado com sucesso');
       },
     });
   }

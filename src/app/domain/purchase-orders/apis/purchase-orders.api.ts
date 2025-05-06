@@ -1,7 +1,6 @@
+import { Injectable } from '@angular/core';
 import { BaseApi } from 'src/app/shared/apis/base.api';
 import { CrudService } from 'src/app/shared/interfaces/crud-service.interface';
-/* eslint-disable @typescript-eslint/naming-convention */
-import { Injectable } from '@angular/core';
 
 import { iOrder } from '../interfaces/purchase-orders.interface';
 
@@ -67,9 +66,5 @@ export class AgroPurchaseOrdersApi extends BaseApi<iOrder> implements CrudServic
 
   public delete(id: string) {
     return this.deleteById(id, 'id');
-  }
-
-  public patchProductOrderNoAuth(id: string) {
-    return this.supabase.from('agro_purchase_orders').update({ products_ordered_no_auth: true }).eq('id', id);
   }
 }

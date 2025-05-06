@@ -11,6 +11,7 @@ export interface iOrder {
   products_ordered: iProductOrder[];
   company_id?: string;
   active: boolean;
+  products_ordered_no_auth: boolean;
 }
 
 export interface iProductOrder extends iProduct {
