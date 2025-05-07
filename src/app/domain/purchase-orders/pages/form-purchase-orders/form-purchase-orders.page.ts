@@ -4,12 +4,14 @@ import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
+import { NzFloatButtonModule } from 'ng-zorro-antd/float-button';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { debounceTime, from, fromEvent, map, startWith } from 'rxjs';
 import { AgroCustomerApi } from 'src/app/domain/customers/apis/customers.api';
 import { AgroProductsApi } from 'src/app/domain/products/apis/products.api';
 import { eProductPackage } from 'src/app/domain/products/enums/products.enums';
@@ -18,7 +20,6 @@ import { BaseFormComponent } from 'src/app/shared/components/base-form.component
 /* eslint-disable @typescript-eslint/naming-convention */
 import { CommonModule } from '@angular/common';
 import { NgxMaskDirective } from 'ngx-mask';
-import { from, map, startWith } from 'rxjs';
 
 import { eDynamicField } from '../../../../widgets/components/dynamic-form/dynamic-field.enum';
 import { DynamicFormComponent } from '../../../../widgets/components/dynamic-form/dynamic-form.component';
@@ -46,6 +47,7 @@ import { iOrder, iProductOrder } from './../../interfaces/purchase-orders.interf
     FormsModule,
     NzIconModule,
     NzToolTipModule,
+    NzFloatButtonModule,
   ],
   templateUrl: './form-purchase-orders.page.html',
   styleUrl: './form-purchase-orders.page.scss',
@@ -54,6 +56,8 @@ export class FormPurchaseOrdersPage extends BaseFormComponent<iOrder> {
   protected order: WritableSignal<iOrder>;
   protected table = signal<iProductOrder[]>([]);
   protected products: iProduct[] = [];
+  protected showUpButton = signal(false);
+  protected showDownButton = signal(true);
 
   private readonly customersApi = inject(AgroCustomerApi);
   private readonly productApi = inject(AgroProductsApi);
@@ -62,7 +66,15 @@ export class FormPurchaseOrdersPage extends BaseFormComponent<iOrder> {
 
   constructor() {
     super(inject(AgroPurchaseOrdersApi));
-    console.log();
+
+    fromEvent(window, 'scroll')
+      .pipe(debounceTime(300))
+      .subscribe((event) => {
+        const scrollTop = (event.target as Document).documentElement.scrollTop;
+        const scrollHeight = (event.target as Document).documentElement.scrollHeight;
+        this.showUpButton.set(scrollTop > 1000);
+        this.showDownButton.set(scrollTop < scrollHeight - 1000);
+      });
   }
 
   public productsOrdered = new FormArray<
@@ -373,5 +385,12 @@ export class FormPurchaseOrdersPage extends BaseFormComponent<iOrder> {
     } - ${quantitiesByPackage[eProductPackage.UNIDADE]} ${eProductPackage.UNIDADE} - ${
       quantitiesByPackage[eProductPackage.BANDEIJA]
     } ${eProductPackage.BANDEIJA} - ${quantitiesByPackage[eProductPackage.SACO]} ${eProductPackage.SACO}`;
+  }
+
+  protected scroll(scrollTo: 'up' | 'down') {
+    window.scrollTo({
+      top: scrollTo === 'up' ? 0 : document.body.scrollHeight,
+      behavior: 'smooth',
+    });
   }
 }

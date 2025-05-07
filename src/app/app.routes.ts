@@ -70,6 +70,11 @@ export const APP_ROUTES: Route[] = [
         loadChildren: () =>
           import('./domain/manager-purchase-orders/manager-purchase-orders.routes').then((m) => m.MANAGER_PURCHASE_ORDERS_ROUTES),
       },
+      {
+        path: 'inventory',
+        title: 'Estoque',
+        loadChildren: () => import('./domain/inventory/inventory.routes').then((m) => m.INVENTORY_ROUTES),
+      },
     ],
   },
 ];

@@ -319,3 +319,7 @@ div.red {
     opacity: 1;
   }
 }
+
+.ant-float-btn-group .ant-float-btn {
+  animation: fadeIn 0.5s ease-in-out;
+}

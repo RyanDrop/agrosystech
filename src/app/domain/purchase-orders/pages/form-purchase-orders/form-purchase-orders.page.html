@@ -74,3 +74,17 @@
     <button class="agro" nz-button nzType="primary" (click)="submit()" [disabled]="dynamicForm?.form?.invalid">Confirmar</button>
   }
 </footer>
+<nz-float-button-group nzShape="circle" style="right: 25px; bottom: 20px;">
+  @if(showUpButton()){
+    <nz-float-button [nzIcon]="up" (nzOnClick)="scroll('up')"></nz-float-button>
+  }
+  @if(showDownButton()){
+    <nz-float-button [nzIcon]="down" (nzOnClick)="scroll('down')"></nz-float-button>
+  }
+</nz-float-button-group>
+<ng-template #down>
+  <nz-icon nzType="arrow-down" nzTheme="outline" style="color:#82c25e"/>
+</ng-template>
+<ng-template #up>
+  <nz-icon nzType="arrow-up" nzTheme="outline"  style="color:#82c25e"/>
+</ng-template>

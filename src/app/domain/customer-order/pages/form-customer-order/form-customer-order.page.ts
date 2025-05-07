@@ -6,6 +6,7 @@ import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
+import { NzFloatButtonModule } from 'ng-zorro-antd/float-button';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -14,7 +15,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NgxMaskDirective } from 'ngx-mask';
-import { from, startWith } from 'rxjs';
+import { debounceTime, from, fromEvent, startWith } from 'rxjs';
 import { eProductPackage } from 'src/app/domain/products/enums/products.enums';
 import { iProduct } from 'src/app/domain/products/interfaces/products.interface';
 import { AgroPurchaseOrdersApi } from 'src/app/domain/purchase-orders/apis/purchase-orders.api';
@@ -41,6 +42,7 @@ import { DynamicFormComponent } from '../../../../widgets/components/dynamic-for
     FormsModule,
     NzIconModule,
     NzToolTipModule,
+    NzFloatButtonModule,
   ],
   templateUrl: './form-customer-order.page.html',
   styleUrl: './form-customer-order.page.scss',
@@ -49,6 +51,8 @@ export class FormCustomerOrderPage implements OnInit {
   protected order: WritableSignal<iOrder>;
   protected table = signal<iProductOrder[]>([]);
   protected products: iProduct[] = [];
+  protected showUpButton = signal(false);
+  protected showDownButton = signal(true);
 
   private readonly agroProductsApi = inject(AgroPurchaseOrdersApi);
   private readonly router = inject(Router);
@@ -80,6 +84,14 @@ export class FormCustomerOrderPage implements OnInit {
       this.order = signal(order.data);
       this.getProducts();
     });
+    fromEvent(window, 'scroll')
+      .pipe(debounceTime(300))
+      .subscribe((event) => {
+        const scrollTop = (event.target as Document).documentElement.scrollTop;
+        const scrollHeight = (event.target as Document).documentElement.scrollHeight;
+        this.showUpButton.set(scrollTop > 1000);
+        this.showDownButton.set(scrollTop < scrollHeight - 1000);
+      });
   }
 
   private getProducts() {
@@ -153,5 +165,12 @@ export class FormCustomerOrderPage implements OnInit {
     } - ${quantitiesByPackage[eProductPackage.UNIDADE]} ${eProductPackage.UNIDADE} - ${
       quantitiesByPackage[eProductPackage.BANDEIJA]
     } ${eProductPackage.BANDEIJA} - ${quantitiesByPackage[eProductPackage.SACO]} ${eProductPackage.SACO}`;
+  }
+
+  protected scroll(scrollTo: 'up' | 'down') {
+    window.scrollTo({
+      top: scrollTo === 'up' ? 0 : document.body.scrollHeight,
+      behavior: 'smooth',
+    });
   }
 }

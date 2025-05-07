@@ -9,8 +9,10 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideRouter } from '@angular/router';
 import { IconDefinition } from '@ant-design/icons-angular';
 import {
+  ArrowDownOutline,
   ArrowLeftOutline,
   ArrowRightOutline,
+  ArrowUpOutline,
   BarChartOutline,
   CopyOutline,
   DeleteFill,
@@ -28,6 +30,7 @@ import {
   ShareAltOutline,
   ShopOutline,
   SolutionOutline,
+  TruckOutline,
   UserOutline,
 } from '@ant-design/icons-angular/icons';
 import { provideTransloco } from '@jsverse/transloco';
@@ -45,6 +48,8 @@ const icons: IconDefinition[] = [
   UserOutline,
   ArrowRightOutline,
   ArrowLeftOutline,
+  ArrowDownOutline,
+  ArrowUpOutline,
   EyeOutline,
   EyeInvisibleOutline,
   ShopOutline,
@@ -62,6 +67,7 @@ const icons: IconDefinition[] = [
   LogoutOutline,
   ShareAltOutline,
   CopyOutline,
+  TruckOutline,
 ];
 
 registerLocaleData(pt);

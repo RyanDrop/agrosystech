@@ -38,7 +38,7 @@
   }
 
   nz-content {
-    min-height: 100vh;
+    min-height: calc(100vh - 37px);
     padding: 0px 20px 20px 20px;
     width: 100%;
     max-width: 1400px;
