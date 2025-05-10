@@ -7,6 +7,7 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { from } from 'rxjs';
 import { BaseFormComponent } from 'src/app/shared/components/base-form.component';
+import { PACKAGE_OPTIONS } from 'src/app/shared/constants/package-options.constants';
 
 import { eDynamicField } from '../../../../widgets/components/dynamic-form/dynamic-field.enum';
 import { DynamicFormComponent } from '../../../../widgets/components/dynamic-form/dynamic-form.component';
@@ -58,32 +59,7 @@ export class FormProductsPage extends BaseFormComponent<iProduct> {
         select: {
           hideClear: true,
           showSearch: true,
-          options: [
-            {
-              label: 'CX',
-              value: 'CX',
-            },
-            {
-              label: 'CXP',
-              value: 'CXP',
-            },
-            {
-              label: 'CXM',
-              value: 'CXM',
-            },
-            {
-              label: 'UN',
-              value: 'UN',
-            },
-            {
-              label: 'BDJ',
-              value: 'BDJ',
-            },
-            {
-              label: 'SC',
-              value: 'SC',
-            },
-          ],
+          options: PACKAGE_OPTIONS,
         },
         initialValue: 'CX',
         size: 4,

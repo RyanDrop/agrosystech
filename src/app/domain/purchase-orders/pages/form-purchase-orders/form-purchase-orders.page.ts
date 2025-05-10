@@ -17,6 +17,7 @@ import { AgroProductsApi } from 'src/app/domain/products/apis/products.api';
 import { eProductPackage } from 'src/app/domain/products/enums/products.enums';
 import { iProduct } from 'src/app/domain/products/interfaces/products.interface';
 import { BaseFormComponent } from 'src/app/shared/components/base-form.component';
+import { PACKAGE_OPTIONS } from 'src/app/shared/constants/package-options.constants';
 /* eslint-disable @typescript-eslint/naming-convention */
 import { CommonModule } from '@angular/common';
 import { NgxMaskDirective } from 'ngx-mask';
@@ -62,6 +63,7 @@ export class FormPurchaseOrdersPage extends BaseFormComponent<iOrder> {
   private readonly customersApi = inject(AgroCustomerApi);
   private readonly productApi = inject(AgroProductsApi);
   private readonly totalAmount = new FormControl(0);
+  protected readonly packageOptionsData = PACKAGE_OPTIONS;
   protected quantityPerPackageValue: string;
 
   constructor() {
@@ -176,7 +178,7 @@ export class FormPurchaseOrdersPage extends BaseFormComponent<iOrder> {
           quantity: new FormControl<number | null>(findProduct?.quantity || null),
           weight: new FormControl<number | null>(findProduct?.weight || null),
           totalPrice: new FormControl<number | null>(findProduct?.totalPrice || null),
-          package: new FormControl<string>(product.package, { nonNullable: true }),
+          package: new FormControl<string>(findProduct?.package || product.package, { nonNullable: true }),
           way_counting: new FormControl<string>(product.way_counting, { nonNullable: true }),
         });
         this.productsOrdered.push(productGroup);
