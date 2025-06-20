@@ -191,7 +191,7 @@ export class FormPurchaseOrdersPage extends BaseFormComponent<iOrder> {
           const price = typeof +item.price === 'number' ? +item.price : 0;
           const quantity = typeof +item.quantity === 'number' ? +item.quantity : 0;
           const weight = typeof +item.weight === 'number' ? +item.weight : 0;
-          return acc + price * (item.way_counting === 'Q' ? quantity : weight);
+          return acc + price * (item.way_counting === 'W' ? weight : quantity);
         }, 0);
 
         this.totalAmount.setValue(total);

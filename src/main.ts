@@ -16,6 +16,7 @@ import {
   BarChartOutline,
   CopyOutline,
   DeleteFill,
+  DollarOutline,
   DoubleLeftOutline,
   DoubleRightOutline,
   EditOutline,
@@ -23,6 +24,7 @@ import {
   EyeOutline,
   FileDoneOutline,
   FilePdfOutline,
+  FileTextOutline,
   FilterOutline,
   ImportOutline,
   LogoutOutline,
@@ -68,6 +70,8 @@ const icons: IconDefinition[] = [
   ShareAltOutline,
   CopyOutline,
   TruckOutline,
+  DollarOutline,
+  FileTextOutline,
 ];
 
 registerLocaleData(pt);

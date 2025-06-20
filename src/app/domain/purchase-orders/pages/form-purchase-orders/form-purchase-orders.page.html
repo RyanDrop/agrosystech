@@ -33,13 +33,22 @@
                 <nz-input-group>
                   <input type="number" nz-input [formControl]="formGroup.quantity"  max="999999" placeholder="Digite a quantidade" />
                 </nz-input-group>
-              } @else {
+              } @else if (data.way_counting === "W") {
                 <div class="group-counting">
                   <nz-input-group class="mr-2">
                    <input type="number" nz-input [formControl]="formGroup.quantity" max="999999" placeholder="Digite a quantidade" />
                   </nz-input-group>
                   <nz-input-group>
                     <input type="text" nz-input [formControl]="formGroup.weight"  mask="separator.3" max="999999"placeholder="Digite o peso" suffix=" kg" />
+                  </nz-input-group>
+              </div>
+              } @else if (data.way_counting === "B") {
+                <div class="group-counting">
+                  <nz-input-group class="mr-2">
+                    <input type="number" nz-input [formControl]="formGroup.quantity" max="999999" placeholder="Bandeijas" suffix=" bd" />
+                  </nz-input-group>
+                  <nz-input-group>
+                    <input type="number" nz-input [formControl]="formGroup.weight"  max="999999" max="999999" placeholder="Caixas" suffix=" CX" />
                   </nz-input-group>
               </div>
               }
@@ -64,7 +73,7 @@
               </nz-input-group>
             </td>
 
-            <td >{{(data.way_counting === "Q" ? (formGroup.quantity.value || 0)  * (formGroup.price.value || 0)  : (formGroup.weight.value || 0) * (formGroup.price.value || 0)) | currency: 'BRL' }}</td>
+            <td >{{(data.way_counting === "W" ? (formGroup.weight.value || 0)  * (formGroup.price.value || 0)  : (formGroup.quantity.value || 0) * (formGroup.price.value || 0)) | currency: 'BRL' }}</td>
           </tr>
         }
       </tbody>

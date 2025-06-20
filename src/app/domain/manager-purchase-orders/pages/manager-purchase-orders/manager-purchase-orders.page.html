@@ -41,6 +41,28 @@
     <button
       class="agro"
       nz-tooltip
+      nzTooltipTitle="Marcar como Pago"
+      nz-button
+      nzType="primary"
+      (click)="markAsPaid()"
+      [disabled]="selection.selected.length === 0"
+    >
+      <nz-icon nzType="dollar" nzTheme="outline" />
+    </button>
+    <button
+      class="agro"
+      nz-tooltip
+      nzTooltipTitle="Exportar Feira"
+      nz-button
+      nzType="primary"
+      (click)="exportPdfForTotals()"
+      [disabled]="selection.selected.length === 0"
+    >
+      <nz-icon nzType="file-text" nzTheme="outline" />
+    </button>
+    <button
+      class="agro"
+      nz-tooltip
       nzTooltipTitle="Exportar PDF"
       nz-button
       nzType="primary"
@@ -123,6 +145,7 @@
               <th>Cliente</th>
               <th>Status</th>
               <th>Total</th>
+              <th>Caixas</th>
             </tr>
           </thead>
           <tbody>
@@ -133,9 +156,17 @@
                 <td>{{ data?.agro_customers?.name }}</td>
                 <td>{{ data.status }}</td>
                 <td>{{ data.total_amount | currency: 'BRL' }}</td>
+                <td>{{ data.products_ordered | countPackages }}</td>
               </tr>
             }
           </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="6" class="text-right">
+                <span class="total-amount">{{ totalAccumulated }}</span>
+              </td>
+            </tr>
+          </tfoot>
         </nz-table>
       </nz-content>
     </nz-layout>

@@ -19,12 +19,15 @@ import { AgroCustomerApi } from 'src/app/domain/customers/apis/customers.api';
 import { ORDER_STATUS } from 'src/app/domain/purchase-orders/constants/purchase-orders.constants';
 import { BaseManagerComponent } from 'src/app/shared/components/base-manager.component';
 import { convertDateRangeToISO } from 'src/app/shared/functions/convert-date-range-to-iso.function';
-import { manyOrderPdf } from 'src/app/shared/functions/order-pdf.function';
+import { generatePDFByOrders, manyOrderPdf } from 'src/app/shared/functions/order-pdf.function';
 import { ManagerFilter } from 'src/app/shared/interfaces/base.interface';
 /* eslint-disable @typescript-eslint/naming-convention */
 import { CommonModule } from '@angular/common';
-import { catchError, from, of } from 'rxjs';
+import { asyncScheduler, catchError, from, of, scheduled } from 'rxjs';
 
+import { eProductPackage } from 'src/app/domain/products/enums/products.enums';
+import { calcQuantityPerPackageFromPedidos } from 'src/app/shared/functions/calc-packges.function';
+import { CountPackagesPipe } from 'src/app/shared/pipes/count-packages.pipe';
 import { AgroManagerPurchaseOrdersApi } from '../../apis/manager-purchase-orders.api';
 import { iOrder } from '../../interfaces/purchase-orders.interface';
 
@@ -47,8 +50,9 @@ import { iOrder } from '../../interfaces/purchase-orders.interface';
     NzSpinModule,
     NzDatePickerModule,
     NzLayoutModule,
-    NgApexchartsModule, // Ensure this module is installed and imported correctly
+    NgApexchartsModule,
     NzCheckboxModule,
+    CountPackagesPipe,
   ],
   templateUrl: './manager-purchase-orders.page.html',
   styleUrl: './manager-purchase-orders.page.scss',
@@ -69,6 +73,7 @@ export class ManagerPurchaseOrdersPage extends BaseManagerComponent<iOrder> {
   protected topProductsOptions: any;
   protected salesByCustomerOptions: any;
   protected salesEvolutionOptions: any;
+  protected totalAccumulated: string;
 
   constructor() {
     super();
@@ -96,6 +101,7 @@ export class ManagerPurchaseOrdersPage extends BaseManagerComponent<iOrder> {
   protected filter() {
     this.selection.clear();
     this.loadingService.start();
+    this.totalAccumulated = '';
     const filters = [];
     const dateRange = this.dateRange.value;
     const clientes = this.clientesControl.value;
@@ -136,6 +142,58 @@ export class ManagerPurchaseOrdersPage extends BaseManagerComponent<iOrder> {
   protected exportPdf() {
     if (this.selection.selected.length === 0) return;
     manyOrderPdf(this.selection.selected);
+  }
+
+  protected exportPdfForTotals() {
+    if (this.selection.selected.length === 0) return;
+    generatePDFByOrders(this.selection.selected);
+  }
+
+  protected override selectItem(item: iOrder) {
+    super.selectItem(item);
+    this.calcTotalAccumulated();
+  }
+
+  protected override selectAll(event: Event) {
+    super.selectAll(event);
+    this.calcTotalAccumulated();
+  }
+
+  private calcTotalAccumulated() {
+    if (this.selection.selected.length === 0) {
+      this.totalAccumulated = '';
+      return;
+    }
+    const totalPackages = calcQuantityPerPackageFromPedidos(this.selection.selected);
+
+    const totalValue = this.selection.selected.reduce((acc, order) => acc + order.total_amount, 0);
+
+    this.totalAccumulated = `Total: ${totalValue.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    })} | ${totalPackages[eProductPackage.CAIXA]} ${eProductPackage.CAIXA} - ${totalPackages[eProductPackage.CAIXA_PAPELAO]} ${
+      eProductPackage.CAIXA_PAPELAO
+    } - ${totalPackages[eProductPackage.CAIXA_MADEIRA]} ${eProductPackage.CAIXA_MADEIRA} - ${
+      totalPackages[eProductPackage.UNIDADE]
+    } ${eProductPackage.UNIDADE} - ${totalPackages[eProductPackage.BANDEIJA]} ${eProductPackage.BANDEIJA} - ${
+      totalPackages[eProductPackage.SACO]
+    } ${eProductPackage.SACO}`;
+  }
+
+  protected markAsPaid() {
+    if (this.selection.selected.length === 0) return;
+    this.loadingService.start();
+    const ids = this.selection.selected.map((item) => item.id);
+    scheduled(this.managerPurchaseOrdersApi.markAsPaid(ids), asyncScheduler).subscribe(
+      (response) => {
+        if (response) {
+          this.loadingService.stop();
+          this.notificationService.success('Sucesso', 'Pedidos marcados como pagos');
+          this.filter();
+        }
+      },
+      () => this.loadingService.stop(),
+    );
   }
 
   private prepareTopProductsChart() {

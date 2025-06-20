@@ -22,4 +22,10 @@ export class AgroManagerPurchaseOrdersApi extends BaseApi<iOrder> {
   ) {
     return await this.selectPaginateManager<iOrder>(columns, pageIndex, pageSize, orderBy, orderDirection, filters);
   }
+
+  public async markAsPaid(ids: string[]) {
+    return await this.updateMany(ids, {
+      status: 'Pago',
+    });
+  }
 }

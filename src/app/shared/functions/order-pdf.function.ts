@@ -219,3 +219,117 @@ export function manyOrderPdf(orders: iOrder[]) {
 
   doc.save(`Conjunto de PDFs - Data: ${new Date().toLocaleDateString('pt-BR')}.pdf`);
 }
+
+export function getTotalsByProductAndPackage(orders: iOrder[]) {
+  const result: Record<
+    string,
+    {
+      name: string;
+      package: string;
+      quantity: number;
+      weight: number;
+      subtotal: number;
+    }
+  > = {};
+
+  orders.forEach((order) => {
+    order.products_ordered.forEach((prod) => {
+      const key = `${prod.name}|${prod.package}`;
+      const quantity = prod.quantity && !isNaN(+prod.quantity) ? +prod.quantity : 0;
+      const weight = prod.weight && !isNaN(+prod.weight) ? +prod.weight : 0;
+      const price = prod.price && !isNaN(+prod.price) ? +prod.price : 0;
+      const subtotal = prod.way_counting === 'Q' ? price * quantity : price * weight;
+
+      if (!result[key]) {
+        result[key] = {
+          name: prod.name,
+          package: prod.package,
+          quantity: 0,
+          weight: 0,
+          subtotal: 0,
+        };
+      }
+      result[key].quantity += quantity;
+      result[key].weight += weight;
+      result[key].subtotal += subtotal;
+    });
+  });
+
+  return Object.values(result);
+}
+
+function getTotalsByPackage(orders: iOrder[]) {
+  return orders.reduce(
+    (acc, order) => {
+      order.products_ordered.forEach((prod) => {
+        const pkg = prod.package;
+        const quantity = prod.quantity && !isNaN(+prod.quantity) ? +prod.quantity : 0;
+        if (pkg in acc) {
+          acc[pkg] += quantity;
+        }
+      });
+      return acc;
+    },
+    {
+      [eProductPackage.CAIXA]: 0,
+      [eProductPackage.CAIXA_PAPELAO]: 0,
+      [eProductPackage.CAIXA_MADEIRA]: 0,
+      [eProductPackage.UNIDADE]: 0,
+      [eProductPackage.BANDEIJA]: 0,
+      [eProductPackage.SACO]: 0,
+    } as Record<string, number>,
+  );
+}
+
+export function generatePDFByOrders(orders: iOrder[]): void {
+  const doc = new jsPDF();
+  const totalsByProduct = getTotalsByProductAndPackage(orders);
+
+  // Monta tabela consolidada
+  const tableData = totalsByProduct.map((prod) => [
+    `${prod.quantity}${prod.weight ? ` - ${prod.weight}kg` : ''}`,
+    prod.package,
+    prod.name,
+    `${prod.subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`,
+  ]);
+
+  autoTable(doc, {
+    head: [['Qtd.', 'Em.', 'Nome', 'SubTotal']],
+    body: tableData,
+    headStyles: { fillColor: '#82c25e', halign: 'left', cellWidth: 'wrap' },
+    columnStyles: {
+      0: { cellWidth: 18, fontSize: 8 },
+      1: { cellWidth: 10, fontSize: 8 },
+      2: { fontSize: 8 },
+      3: { fontSize: 8 },
+      4: { fontSize: 8 },
+    } as { [key: string]: Partial<Styles> },
+    startY: 5,
+  });
+
+  const quantitiesByPackage = getTotalsByPackage(orders);
+  const packages = Object.entries(quantitiesByPackage)
+    .map(([key, value]) => (value > 0 ? `${value} ${key}` : null))
+    .filter(Boolean);
+
+  const totalAmount = orders.reduce((sum, o) => sum + (o.total_amount || 0), 0);
+
+  autoTable(doc, {
+    head: [['Volumes', 'Embalagens', 'Total']],
+    body: [
+      [
+        `${packages.reduce((acc, item) => +acc + +(item?.split(' ')[0] ?? 0), 0)}`,
+        packages.join(' | '),
+        `${totalAmount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`,
+      ],
+    ],
+    headStyles: { fillColor: '#82c25e', halign: 'right', fontStyle: 'bold' },
+    columnStyles: {
+      0: { halign: 'right', fontStyle: 'bold' },
+      1: { halign: 'right', fontStyle: 'bold' },
+      2: { halign: 'right', fontStyle: 'bold' },
+    },
+  });
+
+  doc.save(`Pedidos-Consolidados-${new Date().toLocaleDateString('pt-BR')}.pdf`);
+}

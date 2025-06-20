@@ -45,7 +45,7 @@ export class FormProductsPage extends BaseFormComponent<iProduct> {
           typeField: 'text',
         },
         validations: [Validators.required, Validators.minLength(3), Validators.maxLength(100)],
-        size: 16,
+        size: 14,
         placeholder: 'Digite o nome do produto',
       },
       {
@@ -84,10 +84,14 @@ export class FormProductsPage extends BaseFormComponent<iProduct> {
               label: 'Peso',
               value: 'W',
             },
+            {
+              label: 'Bandeja',
+              value: 'B',
+            },
           ],
         },
         initialValue: 'Q',
-        size: 4,
+        size: 6,
       },
     ];
 
