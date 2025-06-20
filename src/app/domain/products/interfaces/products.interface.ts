@@ -8,4 +8,4 @@ export interface iProduct {
 }
 
 export type ProductPackage = 'CX' | 'CXP' | 'CXM' | 'SC' | 'BDJ' | 'UN';
-export type WayCountig = 'Q' | 'W';
+export type WayCountig = 'Q' | 'W' | 'B';

@@ -33,7 +33,7 @@ export function generatePDF(order: iOrder): void {
     const quantity = product.quantity && typeof +product.quantity === 'number' ? +product.quantity : 0;
     const weight = product.weight && typeof +product.weight === 'number' ? +product.weight : 0;
     return [
-      `${quantity}${weight ? ` - ${weight}kg` : ''}`,
+      `${quantity}${weight ? ` - ${weight}${product.way_counting == 'W' ? ' kg' : ' cx'}` : ''}`,
       product.package,
       product.name,
       `${price == 0 ? '' : `${price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`}`,
@@ -140,7 +140,7 @@ export function manyOrderPdf(orders: iOrder[]) {
       const quantity = product.quantity && typeof +product.quantity === 'number' ? +product.quantity : 0;
       const weight = product.weight && typeof +product.weight === 'number' ? +product.weight : 0;
       return [
-        `${quantity}${weight ? ` - ${weight}kg` : ''}`,
+        `${quantity}${weight ? ` - ${weight}${product.way_counting == 'W' ? ' kg' : ' cx'}` : ''}`,
         product.package,
         product.name,
         `${price == 0 ? '' : `${price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`}`,
@@ -238,7 +238,7 @@ export function getTotalsByProductAndPackage(orders: iOrder[]) {
       const quantity = prod.quantity && !isNaN(+prod.quantity) ? +prod.quantity : 0;
       const weight = prod.weight && !isNaN(+prod.weight) ? +prod.weight : 0;
       const price = prod.price && !isNaN(+prod.price) ? +prod.price : 0;
-      const subtotal = prod.way_counting === 'Q' ? price * quantity : price * weight;
+      const subtotal = prod.way_counting === 'W' ? price * weight : price * quantity;
 
       if (!result[key]) {
         result[key] = {
@@ -287,7 +287,7 @@ export function generatePDFByOrders(orders: iOrder[]): void {
 
   // Monta tabela consolidada
   const tableData = totalsByProduct.map((prod) => [
-    `${prod.quantity}${prod.weight ? ` - ${prod.weight}kg` : ''}`,
+    `${prod.quantity}${prod.weight ? ` - ${prod.weight}${prod.weight ? ' kg' : ' cx'}` : ''}`,
     prod.package,
     prod.name,
     `${prod.subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`,
