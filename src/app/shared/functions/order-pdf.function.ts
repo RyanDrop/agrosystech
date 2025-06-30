@@ -40,7 +40,7 @@ export function generatePDF(order: iOrder): void {
       `${
         price == 0
           ? ''
-          : `${(price * (product.way_counting === 'Q' ? quantity : weight)).toLocaleString('pt-BR', {
+          : `${(price * (product.way_counting === 'W' ? weight : quantity)).toLocaleString('pt-BR', {
               style: 'currency',
               currency: 'BRL',
             })}`
@@ -147,7 +147,7 @@ export function manyOrderPdf(orders: iOrder[]) {
         `${
           price == 0
             ? ''
-            : `${(price * (product.way_counting === 'Q' ? quantity : weight)).toLocaleString('pt-BR', {
+            : `${(price * (product.way_counting === 'W' ? weight : quantity)).toLocaleString('pt-BR', {
                 style: 'currency',
                 currency: 'BRL',
               })}`
