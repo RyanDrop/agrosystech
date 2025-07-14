@@ -285,8 +285,11 @@ export function generatePDFByOrders(orders: iOrder[]): void {
   const doc = new jsPDF();
   const totalsByProduct = getTotalsByProductAndPackage(orders);
 
+  //remover produtos com quantidade ou peso igual a zero
+  const filteredTotalsByProduct = totalsByProduct.filter((prod) => prod.quantity > 0 || prod.weight > 0);
+
   // Monta tabela consolidada
-  const tableData = totalsByProduct.map((prod) => [
+  const tableData = filteredTotalsByProduct.map((prod) => [
     `${prod.quantity}${prod.weight ? ` - ${prod.weight}${prod.weight ? ' kg' : ' cx'}` : ''}`,
     prod.package,
     prod.name,

@@ -323,3 +323,10 @@ div.red {
 .ant-float-btn-group .ant-float-btn {
   animation: fadeIn 0.5s ease-in-out;
 }
+
+tbody {
+  // em colunas impares, a cor de fundo é verde claro
+  tr:nth-child(odd) {
+    background-color: var(--white-02);
+  }
+}
