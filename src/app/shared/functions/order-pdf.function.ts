@@ -296,6 +296,9 @@ export function generatePDFByOrders(orders: iOrder[]): void {
     `${prod.subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`,
   ]);
 
+  // ordena a tabela por nome do produto
+  tableData.sort((a, b) => a[2].localeCompare(b[2]));
+
   autoTable(doc, {
     head: [['Qtd.', 'Em.', 'Nome', 'SubTotal']],
     body: tableData,
