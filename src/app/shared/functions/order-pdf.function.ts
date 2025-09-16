@@ -234,7 +234,10 @@ export function getTotalsByProductAndPackage(orders: iOrder[]) {
 
   orders.forEach((order) => {
     order.products_ordered.forEach((prod) => {
-      const key = `${prod.name}|${prod.package}`;
+      // Para produtos "Melancia", concatena com o nome do cliente
+      const productName = prod.name.includes('Melancia') ? `${prod.name} ${order.agro_customers?.name || ''}` : prod.name;
+
+      const key = `${productName}|${prod.package}`;
       const quantity = prod.quantity && !isNaN(+prod.quantity) ? +prod.quantity : 0;
       const weight = prod.weight && !isNaN(+prod.weight) ? +prod.weight : 0;
       const price = prod.price && !isNaN(+prod.price) ? +prod.price : 0;
@@ -242,7 +245,7 @@ export function getTotalsByProductAndPackage(orders: iOrder[]) {
 
       if (!result[key]) {
         result[key] = {
-          name: prod.name,
+          name: productName,
           package: prod.package,
           quantity: 0,
           weight: 0,
