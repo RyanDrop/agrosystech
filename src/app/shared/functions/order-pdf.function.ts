@@ -301,9 +301,12 @@ export function generatePDFByOrders(orders: iOrder[]): void {
 
   // ordena a tabela por nome do produto
   tableData.sort((a, b) => a[2].localeCompare(b[2]));
+  // add order date in the head
+  const orderDate = orders[0].order_date;
+  const orderDateFormatted = new Date(orderDate).toLocaleDateString('pt-BR');
 
   autoTable(doc, {
-    head: [['Qtd.', 'Em.', 'Nome', 'SubTotal']],
+    head: [['Qtd.', 'Em.', 'Nome', 'SubTotal', orderDateFormatted]],
     body: tableData,
     headStyles: { fillColor: '#82c25e', halign: 'left', cellWidth: 'wrap' },
     columnStyles: {
@@ -312,6 +315,7 @@ export function generatePDFByOrders(orders: iOrder[]): void {
       2: { fontSize: 8 },
       3: { fontSize: 8 },
       4: { fontSize: 8 },
+      5: { cellWidth: 3 },
     } as { [key: string]: Partial<Styles> },
     startY: 5,
   });
