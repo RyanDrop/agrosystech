@@ -344,5 +344,5 @@ export function generatePDFByOrders(orders: iOrder[]): void {
     },
   });
 
-  doc.save(`Pedidos-Consolidados-${new Date().toLocaleDateString('pt-BR')}.pdf`);
+  doc.save(`Pedidos-Consolidados-${orderDateFormatted}.pdf`);
 }
