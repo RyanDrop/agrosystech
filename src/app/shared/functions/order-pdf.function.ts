@@ -124,7 +124,7 @@ export function manyOrderPdf(orders: iOrder[]) {
       head: [[`Pedido #${order.id}`]],
       body: [[`${order.agro_customers?.name} - ${new Date(order.order_date).toLocaleDateString('pt-BR')}`]],
       headStyles: { fillColor: '#82c25e', fontStyle: 'bold', halign: 'left' },
-      columnStyles: { 0: { fontStyle: 'bold', halign: 'left' } },
+      columnStyles: { 0: { fontStyle: 'bold', halign: 'left', fillColor: '#e8f5e8' } },
       startY: index === 0 && imageY,
       margin: index === 0 ? { left: imageX + imageWidth + 10 } : undefined, // empurra a tabela para a direita da imagem
     });
