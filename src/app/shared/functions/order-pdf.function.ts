@@ -17,7 +17,7 @@ export function generatePDF(order: iOrder): void {
     head: [[`Pedido #${order.id}`]],
     body: [[`${order.agro_customers?.name || ''} - ${new Date(order.order_date).toLocaleDateString('pt-BR')}`]],
     headStyles: { fillColor: '#82c25e', fontStyle: 'bold', halign: 'left' },
-    columnStyles: { 0: { fontStyle: 'bold', halign: 'left' } },
+    columnStyles: { 0: { fontStyle: 'bold', halign: 'left', fillColor: '#D9FFC2' } },
     startY: imageY,
     margin: { left: imageX + imageWidth + 10 }, // empurra a tabela para a direita da imagem
   });
