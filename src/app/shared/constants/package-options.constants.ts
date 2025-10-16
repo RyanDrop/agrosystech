@@ -23,4 +23,8 @@ export const PACKAGE_OPTIONS = [
     label: 'SC',
     value: 'SC',
   },
+  {
+    label: 'PNT',
+    value: 'PNT',
+  },
 ];
