@@ -20,7 +20,7 @@ export abstract class BaseManagerComponent<T> implements OnInit, OnDestroy {
 
   protected pageIndex = 1;
   protected pageSize = 10;
-  protected pageSizeOptions = [5, 10, 20, 50, 100];
+  protected pageSizeOptions = [5, 10, 20, 50, 100, 500];
   protected total: number;
   protected listOfData: T[] = [];
   protected selection = new SelectionModel<T>(true, []);

@@ -22,7 +22,7 @@ export abstract class BaseListComponent<T> implements OnInit, OnDestroy {
   protected columnSearch = 'name';
   protected pageIndex = 1;
   protected pageSize = 5;
-  protected pageSizeOptions = [5, 10, 20, 50];
+  protected pageSizeOptions = [5, 10, 20, 50, 100, 500];
   protected total: number;
   protected listOfData: T[] = [];
 
