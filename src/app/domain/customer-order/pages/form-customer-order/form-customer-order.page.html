@@ -7,7 +7,7 @@
 <nz-divider></nz-divider>
 <main class="crud">
   <div class="form-body">
-    <nz-table #basicTable [nzData]="table()" [nzShowPagination]="false" [nzPageSize]="100"> 
+    <nz-table #basicTable [nzData]="table()" [nzShowPagination]="false" [nzFrontPagination]="false"> 
       <thead>
         <tr>
           <th>Quantidade</th>
@@ -16,7 +16,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (data of basicTable.data; track data; let index = $index) {
+        @for (data of basicTable.data; track data.id; let index = $index) {
           <tr class="table-row">
             <td class="min-w-100">
               @if(data.way_counting === "Q"){
