@@ -15,19 +15,19 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { asyncScheduler, catchError, from, of, scheduled } from 'rxjs';
 import { AgroCustomerApi } from 'src/app/domain/customers/apis/customers.api';
+import { eProductPackage } from 'src/app/domain/products/enums/products.enums';
 import { ORDER_STATUS } from 'src/app/domain/purchase-orders/constants/purchase-orders.constants';
 import { BaseManagerComponent } from 'src/app/shared/components/base-manager.component';
+import { calcQuantityPerPackageFromPedidos } from 'src/app/shared/functions/calc-packges.function';
 import { convertDateRangeToISO } from 'src/app/shared/functions/convert-date-range-to-iso.function';
 import { generatePDFByOrders, manyOrderPdf } from 'src/app/shared/functions/order-pdf.function';
 import { ManagerFilter } from 'src/app/shared/interfaces/base.interface';
+import { CountPackagesPipe } from 'src/app/shared/pipes/count-packages.pipe';
 /* eslint-disable @typescript-eslint/naming-convention */
 import { CommonModule } from '@angular/common';
-import { asyncScheduler, catchError, from, of, scheduled } from 'rxjs';
 
-import { eProductPackage } from 'src/app/domain/products/enums/products.enums';
-import { calcQuantityPerPackageFromPedidos } from 'src/app/shared/functions/calc-packges.function';
-import { CountPackagesPipe } from 'src/app/shared/pipes/count-packages.pipe';
 import { AgroManagerPurchaseOrdersApi } from '../../apis/manager-purchase-orders.api';
 import { iOrder } from '../../interfaces/purchase-orders.interface';
 
@@ -66,7 +66,7 @@ export class ManagerPurchaseOrdersPage extends BaseManagerComponent<iOrder> {
 
   protected optionList: { name: string; id: string }[] = [];
   protected indexCustomer = 1;
-  protected pageCustomer = 10;
+  protected pageCustomer = 100;
   protected totalCustomer = 100;
   protected readonly orderStatus = ORDER_STATUS;
   @ViewChild('chart') protected chart: ChartComponent;
