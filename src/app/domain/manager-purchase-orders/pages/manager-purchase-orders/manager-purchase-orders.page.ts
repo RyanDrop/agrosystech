@@ -182,18 +182,26 @@ export class ManagerPurchaseOrdersPage extends BaseManagerComponent<iOrder> {
 
   protected markAsPaid() {
     if (this.selection.selected.length === 0) return;
-    this.loadingService.start();
-    const ids = this.selection.selected.map((item) => item.id);
-    scheduled(this.managerPurchaseOrdersApi.markAsPaid(ids), asyncScheduler).subscribe(
-      (response) => {
-        if (response) {
-          this.loadingService.stop();
-          this.notificationService.success('Sucesso', 'Pedidos marcados como pagos');
-          this.filter();
-        }
+    this.modal.confirm({
+      nzTitle: 'Atenção',
+      nzContent: 'Deseja realmente marcar todos os pedidos selecionados como pago?',
+      nzOkText: 'Sim',
+      nzOkType: 'primary',
+      nzOnOk: () => {
+        this.loadingService.start();
+        const ids = this.selection.selected.map((item) => item.id);
+        scheduled(this.managerPurchaseOrdersApi.markAsPaid(ids), asyncScheduler).subscribe(
+          (response) => {
+            if (response) {
+              this.loadingService.stop();
+              this.notificationService.success('Sucesso', 'Pedidos marcados como pagos');
+              this.filter();
+            }
+          },
+          () => this.loadingService.stop(),
+        );
       },
-      () => this.loadingService.stop(),
-    );
+    });
   }
 
   private prepareTopProductsChart() {
