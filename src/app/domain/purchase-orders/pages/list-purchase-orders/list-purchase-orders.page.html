@@ -4,22 +4,49 @@
 </header>
 <nz-divider></nz-divider>
 <main class="crud">
-  <div class="flex">
-    <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-      <input type="text" nz-input placeholder="Pesquisar pedido por status" [formControl]="search" />
-    </nz-input-group>
-    <ng-template #suffixIconButton>
-      <button class="agro" nz-button nzType="primary" nzSearch><nz-icon nzType="search" /></button>
-    </ng-template>
+  <div class="flex filters">
+    <nz-select
+      [formControl]="clientesControl"
+      [nzAllowClear]="true"
+      [nzShowSearch]="true"
+      [nzShowArrow]="true"
+      [nzPlaceHolder]="'Selecione os clientes'"
+      [nzMaxTagCount]="100"
+      (nzScrollToBottom)="loadMore()"
+      [nzDropdownRender]="renderTemplate"
+      nzMode="multiple"
+    >
+      @for (item of optionList; track item) {
+        <nz-option [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
+      }
+    </nz-select>
+    <nz-select
+      [formControl]="statusControl"
+      [nzAllowClear]="true"
+      [nzShowSearch]="true"
+      [nzShowArrow]="true"
+      [nzPlaceHolder]="'Selecione os status'"
+      nzMode="multiple"
+    >
+      @for (item of orderStatus; track item) {
+        <nz-option [nzValue]="item.value" [nzLabel]="item.value"></nz-option>
+      }
+    </nz-select>
+    <button nz-button nzType="primary" class="agro" (click)="searchData(true)">Filtrar</button>
     <button
       nz-button
       nzType="primary"
-      class="agro ml-4"
+      class="agro"
       (click)="navigateTo('/purchase-orders/form')"
       (keydown.enter)="navigateTo('/purchase-orders/form')"
     >
       Novo
     </button>
+    <ng-template #renderTemplate>
+      @if (loadingService.loading()) {
+        <nz-spin></nz-spin>
+      }
+    </ng-template>
   </div>
   <nz-divider></nz-divider>
   <nz-table

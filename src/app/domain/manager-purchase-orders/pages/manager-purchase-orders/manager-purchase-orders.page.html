@@ -30,13 +30,13 @@
     <button
       class="agro"
       nz-tooltip
-      nzTooltipTitle="Consultar Pedido"
+      nzTooltipTitle="Editar Pedido"
       nz-button
       nzType="primary"
-      (click)="navigateTo('purchase-orders/form/' + selection.selected[0].id + '/consult')"
+      (click)="navigateTo('purchase-orders/form/' + selection.selected[0].id + '/edit')"
       [disabled]="selection.selected.length !== 1"
     >
-      <nz-icon nzType="eye" nzTheme="outline" />
+      <nz-icon nzType="edit" nzTheme="outline" />
     </button>
     <button
       class="agro"

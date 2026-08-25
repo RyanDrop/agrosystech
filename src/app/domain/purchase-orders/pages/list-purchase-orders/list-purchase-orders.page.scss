@@ -1,4 +1,15 @@
 :host {
+  .filters {
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-start;
+
+    nz-select {
+      min-width: 240px;
+      flex: 1;
+    }
+  }
+
   nz-table {
     .anticon {
       margin: 0 10px;
