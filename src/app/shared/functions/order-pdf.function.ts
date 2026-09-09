@@ -8,16 +8,16 @@ export function generatePDF(order: iOrder): void {
 
   const imageX = 14;
   const imageY = 5;
-  const imageWidth = 20;
+  const imageWidth = 25;
   const imageHeight = 20;
 
-  doc.addImage('assets/images/logo-celinho.png', 'PNG', imageX, imageY, imageWidth, imageHeight);
+  doc.addImage('assets/images/logo-celinho.jpeg', 'PNG', imageX, imageY, imageWidth, imageHeight);
 
   autoTable(doc, {
     head: [[`Pedido #${order.id}`]],
     body: [[`${order.agro_customers?.name || ''} - ${new Date(order.order_date).toLocaleDateString('pt-BR')}`]],
-    headStyles: { fillColor: '#82c25e', fontStyle: 'bold', halign: 'left' },
-    columnStyles: { 0: { fontStyle: 'bold', halign: 'left', fillColor: '#D9FFC2' } },
+    headStyles: { fillColor: '#00163D', fontStyle: 'bold', halign: 'left' },
+    columnStyles: { 0: { fontStyle: 'bold', halign: 'left', fillColor: '#a8c5f7', textColor: '#000' } },
     startY: imageY,
     margin: { left: imageX + imageWidth + 10 }, // empurra a tabela para a direita da imagem
   });
@@ -51,7 +51,7 @@ export function generatePDF(order: iOrder): void {
   autoTable(doc, {
     head: [['Qtd.', 'Em.', 'Nome', 'Preço', 'SubTotal']],
     body: tableData,
-    headStyles: { fillColor: '#82c25e', halign: 'left', cellWidth: 'wrap' },
+    headStyles: { fillColor: '#00163D', halign: 'left', cellWidth: 'wrap' },
     columnStyles: {
       0: { cellWidth: 18, fontSize: 8 },
       1: { cellWidth: 10, fontSize: 8 },
@@ -99,7 +99,7 @@ export function generatePDF(order: iOrder): void {
         `${order.total_amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`,
       ],
     ],
-    headStyles: { fillColor: '#82c25e', halign: 'right', fontStyle: 'bold' },
+    headStyles: { fillColor: '#00163D', halign: 'right', fontStyle: 'bold' },
     columnStyles: {
       0: { halign: 'right', fontStyle: 'bold' },
       1: { halign: 'right', fontStyle: 'bold' },
@@ -117,14 +117,14 @@ export function manyOrderPdf(orders: iOrder[]) {
   const imageWidth = 20;
   const imageHeight = 20;
 
-  doc.addImage('assets/images/logo-celinho.png', 'PNG', imageX, imageY, imageWidth, imageHeight);
+  doc.addImage('assets/images/logo-celinho.jpeg', 'PNG', imageX, imageY, imageWidth, imageHeight);
 
   orders.forEach((order, index) => {
     autoTable(doc, {
       head: [[`Pedido #${order.id}`]],
       body: [[`${order.agro_customers?.name} - ${new Date(order.order_date).toLocaleDateString('pt-BR')}`]],
-      headStyles: { fillColor: '#82c25e', fontStyle: 'bold', halign: 'left' },
-      columnStyles: { 0: { fontStyle: 'bold', halign: 'left', fillColor: '#D9FFC2' } },
+      headStyles: { fillColor: '#00163D', fontStyle: 'bold', halign: 'left' },
+      columnStyles: { 0: { fontStyle: 'bold', halign: 'left', fillColor: '#a8c5f7', textColor: '#000' } },
       startY: index === 0 && imageY,
       margin: index === 0 ? { left: imageX + imageWidth + 10 } : undefined, // empurra a tabela para a direita da imagem
     });
@@ -309,7 +309,7 @@ export function generatePDFByOrders(orders: iOrder[]): void {
   autoTable(doc, {
     head: [['Qtd.', 'Em.', 'Nome', 'SubTotal', orderDateFormatted]],
     body: tableData,
-    headStyles: { fillColor: '#82c25e', halign: 'left', cellWidth: 'wrap' },
+    headStyles: { fillColor: '#00163D', halign: 'left', cellWidth: 'wrap' },
     columnStyles: {
       0: { cellWidth: 18, fontSize: 8 },
       1: { cellWidth: 10, fontSize: 8 },
@@ -337,7 +337,7 @@ export function generatePDFByOrders(orders: iOrder[]): void {
         `${totalAmount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`,
       ],
     ],
-    headStyles: { fillColor: '#82c25e', halign: 'right', fontStyle: 'bold' },
+    headStyles: { fillColor: '#00163D', halign: 'right', fontStyle: 'bold' },
     columnStyles: {
       0: { halign: 'right', fontStyle: 'bold' },
       1: { halign: 'right', fontStyle: 'bold' },
