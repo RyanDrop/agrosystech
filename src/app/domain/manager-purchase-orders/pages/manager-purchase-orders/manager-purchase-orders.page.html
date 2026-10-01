@@ -142,7 +142,14 @@
                 ></label>
               </th>
               <th>Data do Pedido</th>
-              <th>Cliente</th>
+              <th
+                nzShowSort
+                [nzSortFn]="true"
+                [nzSortOrder]="customerSortOrder"
+                (nzSortOrderChange)="sortByCustomer($event)"
+              >
+                Cliente
+              </th>
               <th>Status</th>
               <th>Total</th>
               <th>Caixas</th>

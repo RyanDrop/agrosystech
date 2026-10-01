@@ -74,6 +74,7 @@ export class ManagerPurchaseOrdersPage extends BaseManagerComponent<iOrder> {
   protected salesByCustomerOptions: any;
   protected salesEvolutionOptions: any;
   protected totalAccumulated: string;
+  protected customerSortOrder: 'ascend' | 'descend' | null = null;
 
   constructor() {
     super();
@@ -122,8 +123,8 @@ export class ManagerPurchaseOrdersPage extends BaseManagerComponent<iOrder> {
         this.pageIndex,
         this.pageSize,
         '*, agro_customers(name)',
-        'order_date',
-        'desc',
+        this.customerSortOrder ? 'agro_customers(name)' : 'order_date',
+        this.customerSortOrder === 'ascend' ? 'asc' : 'desc',
         filters as ManagerFilter[],
       ),
     ).subscribe(
@@ -137,6 +138,12 @@ export class ManagerPurchaseOrdersPage extends BaseManagerComponent<iOrder> {
       },
       () => this.loadingService.stop(),
     );
+  }
+
+  protected sortByCustomer(order: string | null) {
+    this.customerSortOrder = order === 'ascend' || order === 'descend' ? order : null;
+    this.pageIndex = 1;
+    this.filter();
   }
 
   protected exportPdf() {
