@@ -8,10 +8,10 @@ export function generatePDF(order: iOrder): void {
 
   const imageX = 14;
   const imageY = 5;
-  const imageWidth = 25;
+  const imageWidth = 22;
   const imageHeight = 20;
 
-  doc.addImage('assets/images/logo-celinho.jpeg', 'PNG', imageX, imageY, imageWidth, imageHeight);
+  doc.addImage('assets/images/logo-celinho-comercio-atacadista.png', 'PNG', imageX, imageY, imageWidth, imageHeight);
 
   autoTable(doc, {
     head: [[`Pedido #${order.id}`]],
@@ -114,10 +114,10 @@ export function manyOrderPdf(orders: iOrder[]) {
   const doc = new jsPDF();
   const imageX = 14;
   const imageY = 5;
-  const imageWidth = 20;
+  const imageWidth = 22;
   const imageHeight = 20;
 
-  doc.addImage('assets/images/logo-celinho.jpeg', 'PNG', imageX, imageY, imageWidth, imageHeight);
+  doc.addImage('assets/images/logo-celinho-comercio-atacadista.png', 'PNG', imageX, imageY, imageWidth, imageHeight);
 
   orders.forEach((order, index) => {
     autoTable(doc, {
