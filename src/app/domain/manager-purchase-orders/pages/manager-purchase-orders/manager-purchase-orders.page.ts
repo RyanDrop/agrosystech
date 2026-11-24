@@ -180,7 +180,7 @@ export class ManagerPurchaseOrdersPage extends BaseManagerComponent<iOrder> {
       currency: 'BRL',
     })} | ${totalPackages[eProductPackage.CAIXA]} ${eProductPackage.CAIXA} - ${totalPackages[eProductPackage.CAIXA_PAPELAO]} ${
       eProductPackage.CAIXA_PAPELAO
-    } - ${totalPackages[eProductPackage.CAIXA_MADEIRA]} ${eProductPackage.CAIXA_MADEIRA} - ${
+    } - ${totalPackages[eProductPackage.CAIXA_MADEIRA]} ${eProductPackage.CAIXA_MADEIRA} - ${totalPackages[eProductPackage.CAIXA_CELINHO]} ${eProductPackage.CAIXA_CELINHO} - ${
       totalPackages[eProductPackage.UNIDADE]
     } ${eProductPackage.UNIDADE} - ${totalPackages[eProductPackage.BANDEIJA]} ${eProductPackage.BANDEIJA} - ${
       totalPackages[eProductPackage.SACO]

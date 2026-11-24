@@ -7,5 +7,5 @@ export interface iProduct {
   company_id?: string;
 }
 
-export type ProductPackage = 'CX' | 'CXP' | 'CXM' | 'SC' | 'BDJ' | 'UN' | 'PNT';
+export type ProductPackage = 'CX' | 'CXP' | 'CXM' | 'CXC' | 'SC' | 'BDJ' | 'UN' | 'PNT';
 export type WayCountig = 'Q' | 'W' | 'B';

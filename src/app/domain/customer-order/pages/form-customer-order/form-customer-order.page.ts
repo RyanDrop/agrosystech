@@ -151,6 +151,7 @@ export class FormCustomerOrderPage implements OnInit {
       {
         [eProductPackage.CAIXA]: 0,
         [eProductPackage.CAIXA_MADEIRA]: 0,
+        [eProductPackage.CAIXA_CELINHO]: 0,
         [eProductPackage.CAIXA_PAPELAO]: 0,
         [eProductPackage.UNIDADE]: 0,
         [eProductPackage.BANDEIJA]: 0,
@@ -162,7 +163,9 @@ export class FormCustomerOrderPage implements OnInit {
       quantitiesByPackage[eProductPackage.CAIXA_PAPELAO]
     } ${eProductPackage.CAIXA_PAPELAO} - ${quantitiesByPackage[eProductPackage.CAIXA_MADEIRA]} ${
       eProductPackage.CAIXA_MADEIRA
-    } - ${quantitiesByPackage[eProductPackage.UNIDADE]} ${eProductPackage.UNIDADE} - ${
+    } - ${quantitiesByPackage[eProductPackage.CAIXA_CELINHO]} ${eProductPackage.CAIXA_CELINHO} - ${
+      quantitiesByPackage[eProductPackage.UNIDADE]
+    } ${eProductPackage.UNIDADE} - ${
       quantitiesByPackage[eProductPackage.BANDEIJA]
     } ${eProductPackage.BANDEIJA} - ${quantitiesByPackage[eProductPackage.SACO]} ${eProductPackage.SACO}`;
   }

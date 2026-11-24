@@ -12,6 +12,10 @@ export const PACKAGE_OPTIONS = [
     value: 'CXM',
   },
   {
+    label: 'CXC',
+    value: 'CXC',
+  },
+  {
     label: 'UN',
     value: 'UN',
   },
